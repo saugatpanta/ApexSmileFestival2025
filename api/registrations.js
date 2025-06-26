@@ -1,26 +1,28 @@
 import { MongoClient } from 'mongodb';
 
-// MongoDB connection URI with proper encoding
 const uri = process.env.MONGODB_URI;
 let cachedDb = null;
 
 async function connectToDatabase() {
   if (cachedDb) {
-    console.log("Using cached database connection");
     return cachedDb;
   }
   
-  console.log("Creating new database connection");
+  console.log("Connecting to MongoDB...");
   
-  // Create a new MongoClient with proper options
+  // Create a new MongoClient with connection pooling
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 10000, // 10 seconds
+    maxPoolSize: 10,
+    serverSelectionTimeoutMS: 5000,
+    auth: {
+      username: process.env.MONGO_USER,
+      password: process.env.MONGO_PASSWORD
+    }
   });
   
   try {
-    // Connect to the MongoDB cluster
     await client.connect();
     console.log("Connected to MongoDB server");
     
@@ -29,12 +31,12 @@ async function connectToDatabase() {
     
     // Verify connection
     await db.command({ ping: 1 });
-    console.log("Successfully pinged the database");
+    console.log("Database ping successful");
     
     cachedDb = db;
     return db;
   } catch (error) {
-    console.error("Failed to connect to MongoDB:", error);
+    console.error("MongoDB connection error:", error);
     throw error;
   }
 }
@@ -43,7 +45,6 @@ export default async function handler(req, res) {
   console.log("Registration request received");
   
   if (req.method !== 'POST') {
-    console.log("Method not allowed:", req.method);
     return res.status(405).json({ 
       success: false, 
       message: 'Method not allowed' 
@@ -52,27 +53,24 @@ export default async function handler(req, res) {
 
   try {
     const db = await connectToDatabase();
-    console.log("Database connected");
-    
     const registrations = db.collection('registrations');
-    console.log("Registrations collection accessed");
 
     const { name, email, contact, program, semester, reelLink } = req.body;
-    console.log("Request data:", { name, email, contact, program, semester, reelLink });
-
-    // Validate input
-    if (!name || !email || !contact || !program || !semester || !reelLink) {
-      console.log("Missing required fields");
+    
+    // Validate required fields
+    const requiredFields = ['name', 'email', 'contact', 'program', 'semester', 'reelLink'];
+    const missingFields = requiredFields.filter(field => !req.body[field]);
+    
+    if (missingFields.length > 0) {
       return res.status(400).json({
         success: false,
-        message: 'All fields are required'
+        message: `Missing required fields: ${missingFields.join(', ')}`
       });
     }
 
     // Check for existing email
     const existingEmail = await registrations.findOne({ email });
     if (existingEmail) {
-      console.log("Email already exists:", email);
       return res.status(400).json({
         success: false,
         message: 'This email is already registered'
@@ -82,7 +80,6 @@ export default async function handler(req, res) {
     // Check for existing contact
     const existingContact = await registrations.findOne({ contact });
     if (existingContact) {
-      console.log("Contact already exists:", contact);
       return res.status(400).json({
         success: false,
         message: 'This phone number is already registered'
@@ -91,8 +88,7 @@ export default async function handler(req, res) {
 
     // Generate registration ID
     const registrationId = generateRegistrationId();
-    console.log("Generated registration ID:", registrationId);
-
+    
     // Create new registration
     const newRegistration = {
       registrationId,
@@ -106,8 +102,7 @@ export default async function handler(req, res) {
       createdAt: new Date()
     };
 
-    const result = await registrations.insertOne(newRegistration);
-    console.log("Registration inserted:", result.insertedId);
+    await registrations.insertOne(newRegistration);
 
     res.status(201).json({
       success: true,
