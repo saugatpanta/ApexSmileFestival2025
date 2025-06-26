@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-// MongoDB connection URI
+// MongoDB connection URI with proper encoding
 const uri = process.env.MONGODB_URI;
 let cachedDb = null;
 
@@ -11,17 +11,32 @@ async function connectToDatabase() {
   }
   
   console.log("Creating new database connection");
-  const client = await MongoClient.connect(uri, {
+  
+  // Create a new MongoClient with proper options
+  const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 5000,
+    serverSelectionTimeoutMS: 10000, // 10 seconds
   });
   
-  const db = client.db('apex_reels');
-  cachedDb = db;
-  
-  console.log("Database connection established");
-  return db;
+  try {
+    // Connect to the MongoDB cluster
+    await client.connect();
+    console.log("Connected to MongoDB server");
+    
+    // Select the database
+    const db = client.db('apex_reels');
+    
+    // Verify connection
+    await db.command({ ping: 1 });
+    console.log("Successfully pinged the database");
+    
+    cachedDb = db;
+    return db;
+  } catch (error) {
+    console.error("Failed to connect to MongoDB:", error);
+    throw error;
+  }
 }
 
 export default async function handler(req, res) {
