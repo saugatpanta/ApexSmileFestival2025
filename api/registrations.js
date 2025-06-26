@@ -7,9 +7,9 @@ let cachedDb = null;
 async function connectToDatabase() {
   if (cachedDb) return cachedDb;
   
-  const client = new MongoClient(uri, { 
-    useNewUrlParser: true, 
-    useUnifiedTopology: true 
+  const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
   });
   
   await client.connect();
@@ -18,28 +18,41 @@ async function connectToDatabase() {
   return db;
 }
 
-export default async function handler(req, res) {
+async function syncToGoogleSheets(registration) {
   try {
-    const { name, email, contact, program, semester, reelLink } = req.body;
+    const response = await axios.post(
+      process.env.GOOGLE_SCRIPT_URL,
+      registration,
+      {
+        headers: {
+          'Authorization': `Bearer ${process.env.SHEET_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        timeout: 10000 // 10 seconds timeout
+      }
+    );
     
-    // Connect to MongoDB
+    console.log('Google Sheets sync successful:', response.data);
+    return true;
+  } catch (error) {
+    console.error('Google Sheets sync failed:', error.message);
+    return false;
+  }
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ 
+      success: false, 
+      message: 'Method not allowed' 
+    });
+  }
+
+  try {
     const db = await connectToDatabase();
     const registrations = db.collection('registrations');
-    
-    // Check for existing registration
-    if (await registrations.findOne({ email })) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'This email is already registered' 
-      });
-    }
-    
-    if (await registrations.findOne({ contact })) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'This phone number is already registered' 
-      });
-    }
+
+    const { name, email, contact, program, semester, reelLink } = req.body;
     
     // Generate registration ID
     const registrationId = generateRegistrationId();
@@ -56,29 +69,20 @@ export default async function handler(req, res) {
       status: 'Submitted',
       createdAt: new Date()
     };
-    
-    // Insert into MongoDB
-    await registrations.insertOne(newRegistration);
-    
-    // Trigger real-time sync to Google Sheet
-    try {
-      await axios.post(process.env.GOOGLE_SCRIPT_URL, newRegistration, {
-        headers: { 
-          'Authorization': `Bearer ${process.env.SHEET_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      console.log("✅ Real-time sync triggered");
-    } catch (syncError) {
-      console.error("⚠️ Real-time sync failed:", syncError.message);
-    }
-    
+
+    // Save to MongoDB
+    const result = await registrations.insertOne(newRegistration);
+    console.log('Saved to MongoDB:', result.insertedId);
+
+    // Sync to Google Sheets (fire-and-forget)
+    syncToGoogleSheets(newRegistration);
+
     res.status(201).json({
       success: true,
       registrationId,
       timestamp: newRegistration.createdAt
     });
-    
+
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({
