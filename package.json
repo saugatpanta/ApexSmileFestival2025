@@ -1,0 +1,13 @@
+{
+  "name": "apex-smile-festival",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "mongodb": "^5.7.0"
+  },
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  }
+}
