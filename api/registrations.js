@@ -1,46 +1,44 @@
 import { MongoClient } from 'mongodb';
-import axios from 'axios';
 
 const uri = process.env.MONGODB_URI;
 let cachedDb = null;
 
 async function connectToDatabase() {
-  if (cachedDb) return cachedDb;
+  if (cachedDb) {
+    return cachedDb;
+  }
+  
+  console.log("Connecting to MongoDB...");
   
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    maxPoolSize: 10,
+    serverSelectionTimeoutMS: 10000,
   });
   
-  await client.connect();
-  const db = client.db('apex_reels');
-  cachedDb = db;
-  return db;
-}
-
-async function syncToGoogleSheets(registration) {
   try {
-    const response = await axios.post(
-      process.env.GOOGLE_SCRIPT_URL,
-      registration,
-      {
-        headers: {
-          'Authorization': `Bearer ${process.env.SHEET_API_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        timeout: 10000 // 10 seconds timeout
-      }
-    );
+    await client.connect();
+    console.log("Connected to MongoDB server");
     
-    console.log('Google Sheets sync successful:', response.data);
-    return true;
+    // Explicitly select database
+    const db = client.db('apex_reels');
+    
+    // Verify permissions by listing collections
+    const collections = await db.listCollections().toArray();
+    console.log("Available collections:", collections.map(c => c.name));
+    
+    cachedDb = db;
+    return db;
   } catch (error) {
-    console.error('Google Sheets sync failed:', error.message);
-    return false;
+    console.error("MongoDB connection error:", error);
+    throw error;
   }
 }
 
 export default async function handler(req, res) {
+  console.log("Registration request received");
+  
   if (req.method !== 'POST') {
     return res.status(405).json({ 
       success: false, 
@@ -50,13 +48,45 @@ export default async function handler(req, res) {
 
   try {
     const db = await connectToDatabase();
+    console.log("Database connected");
+    
+    // Access the registrations collection
     const registrations = db.collection('registrations');
+    console.log("Registrations collection accessed");
 
     const { name, email, contact, program, semester, reelLink } = req.body;
-    
+    console.log("Request data:", { name, email, contact, program, semester, reelLink });
+
+    // Validate input
+    if (!name || !email || !contact || !program || !semester || !reelLink) {
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required'
+      });
+    }
+
+    // Check for existing email
+    const existingEmail = await registrations.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'This email is already registered'
+      });
+    }
+
+    // Check for existing contact
+    const existingContact = await registrations.findOne({ contact });
+    if (existingContact) {
+      return res.status(400).json({
+        success: false,
+        message: 'This phone number is already registered'
+      });
+    }
+
     // Generate registration ID
     const registrationId = generateRegistrationId();
-    
+    console.log("Generated registration ID:", registrationId);
+
     // Create new registration
     const newRegistration = {
       registrationId,
@@ -70,12 +100,9 @@ export default async function handler(req, res) {
       createdAt: new Date()
     };
 
-    // Save to MongoDB
+    // Insert into database
     const result = await registrations.insertOne(newRegistration);
-    console.log('Saved to MongoDB:', result.insertedId);
-
-    // Sync to Google Sheets (fire-and-forget)
-    syncToGoogleSheets(newRegistration);
+    console.log("Registration inserted with ID:", result.insertedId);
 
     res.status(201).json({
       success: true,
