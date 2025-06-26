@@ -10,28 +10,23 @@ async function connectToDatabase() {
   
   console.log("Connecting to MongoDB...");
   
-  // Create a new MongoClient with connection pooling
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     maxPoolSize: 10,
-    serverSelectionTimeoutMS: 5000,
-    auth: {
-      username: process.env.MONGO_USER,
-      password: process.env.MONGO_PASSWORD
-    }
+    serverSelectionTimeoutMS: 10000,
   });
   
   try {
     await client.connect();
     console.log("Connected to MongoDB server");
     
-    // Select the database
+    // Explicitly select database
     const db = client.db('apex_reels');
     
-    // Verify connection
-    await db.command({ ping: 1 });
-    console.log("Database ping successful");
+    // Verify permissions by listing collections
+    const collections = await db.listCollections().toArray();
+    console.log("Available collections:", collections.map(c => c.name));
     
     cachedDb = db;
     return db;
@@ -53,18 +48,20 @@ export default async function handler(req, res) {
 
   try {
     const db = await connectToDatabase();
+    console.log("Database connected");
+    
+    // Access the registrations collection
     const registrations = db.collection('registrations');
+    console.log("Registrations collection accessed");
 
     const { name, email, contact, program, semester, reelLink } = req.body;
-    
-    // Validate required fields
-    const requiredFields = ['name', 'email', 'contact', 'program', 'semester', 'reelLink'];
-    const missingFields = requiredFields.filter(field => !req.body[field]);
-    
-    if (missingFields.length > 0) {
+    console.log("Request data:", { name, email, contact, program, semester, reelLink });
+
+    // Validate input
+    if (!name || !email || !contact || !program || !semester || !reelLink) {
       return res.status(400).json({
         success: false,
-        message: `Missing required fields: ${missingFields.join(', ')}`
+        message: 'All fields are required'
       });
     }
 
@@ -88,7 +85,8 @@ export default async function handler(req, res) {
 
     // Generate registration ID
     const registrationId = generateRegistrationId();
-    
+    console.log("Generated registration ID:", registrationId);
+
     // Create new registration
     const newRegistration = {
       registrationId,
@@ -102,7 +100,9 @@ export default async function handler(req, res) {
       createdAt: new Date()
     };
 
-    await registrations.insertOne(newRegistration);
+    // Insert into database
+    const result = await registrations.insertOne(newRegistration);
+    console.log("Registration inserted with ID:", result.insertedId);
 
     res.status(201).json({
       success: true,
