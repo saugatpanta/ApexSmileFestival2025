@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Smile Festival 2025 | Reels Competition</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/saugatpanta/icon/main/Smile%20logo.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        // Your Google Apps Script deployment ID
+        const SCRIPT_ID = 'AKfycbx8u2wGhtRwsY4bn7ZV8CkJmW_rqrj1mUiyZVcS8Mq6N16lOCjIqS5AXuyFLwtaHFcz';
+    </script>
+    <style>
+        :root {
+            --primary: #FF5E62;
+            --secondary: #FF9966;
+            --accent: #FF4274;
+            --light: #FFFFFF;
+            --dark: #1A1A2E;
+            --gray: #16213E;
+            --dark-gray: #0F3460;
+            --success: #00D2AA;
+            --warning: #FFC75F;
+            --danger: #FF6B6B;
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            --inner-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.15);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --border-radius: 20px;
+            --card-radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark), var(--gray));
+            color: var(--light);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(255, 94, 98, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 153, 102, 0.15) 0%, transparent 25%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 60px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: -40px;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            padding: 0 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            z-index: -1;
+            opacity: 0.7;
+            animation: rotate 20s linear infinite;
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        .logo img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to right, #fff, #ffe8e8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            position: relative;
+            z-index: 2;
+            margin-top: 40px;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 60px;
+            position: relative;
+            border: 1px solid var(--glass-border);
+            z-index: 2;
+            transform: translateY(0);
+            transition: var(--transition);
+        }
+
+        .form-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h2 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--light), #ffd1d9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .form-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--light);
+            font-size: 1rem;
+            padding-left: 10px;
+        }
+
+        .required {
+            color: var(--accent);
+            margin-left: 3px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: var(--transition);
+            font-family: inherit;
+            color: var(--light);
+            outline: none;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 0 3px rgba(255, 94, 98, 0.3);
+        }
+
+        /* Button Styles */
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 18px 32px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(255, 94, 98, 0.3);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(255, 94, 98, 0.4);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: translateY(-2px);
+        }
+
+        /* Info Sidebar */
+        .info-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            position: sticky;
+            top: 30px;
+            height: fit-content;
+        }
+
+        .info-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--glass-border);
+            transform: translateY(0);
+            transition: var(--transition);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            color: var(--light);
+        }
+
+        .info-card h3 i {
+            margin-right: 12px;
+            font-size: 1.6rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .info-card ul {
+            list-style: none;
+        }
+
+        .info-card li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 30px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .info-card li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .deadline-card {
+            background: linear-gradient(135deg, rgba(255, 94, 98, 0.15), rgba(255, 66, 116, 0.2));
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .deadline-card li::before {
+            color: var(--light);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 30, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            color: white;
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .spinner {
+            width: 70px;
+            height: 70px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin-bottom: 25px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 20px;
+            border-radius: var(--card-radius);
+            margin-bottom: 25px;
+            display: none;
+            box-shadow: var(--shadow);
+            border-left: 4px solid;
+            animation: slideIn 0.5s ease-out;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .alert-success {
+            border-left-color: var(--success);
+        }
+
+        .alert-danger {
+            border-left-color: var(--danger);
+        }
+
+        /* Success Container */
+        .success-container {
+            display: none;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border-radius: var(--border-radius);
+            padding: 50px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            margin-bottom: 60px;
+            border: 1px solid var(--glass-border);
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(0);
+            transition: var(--transition);
+        }
+
+        .success-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .success-icon {
+            font-size: 5.5rem;
+            margin-bottom: 25px;
+            background: linear-gradient(to right, var(--success), #00ffd5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: bounce 1.5s ease infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-15px); }
+        }
+
+        .registration-id {
+            font-size: 1.7rem;
+            font-weight: bold;
+            margin: 30px 0;
+            padding: 18px 35px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            color: var(--primary);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Error Styles */
+        .error-message {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 8px;
+            display: none;
+            font-weight: 500;
+            padding-left: 10px;
+        }
+
+        input.error, select.error {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Background Elements */
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.25;
+            z-index: 1;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .bg-shape-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--primary);
+            top: 10%;
+            left: 5%;
+        }
+
+        .bg-shape-2 {
+            width: 600px;
+            height: 600px;
+            background: var(--accent);
+            bottom: 10%;
+            right: 5%;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(20px, 20px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            margin-top: 20px;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        footer a:hover {
+            color: var(--light);
+            text-decoration: underline;
+        }
+        
+        /* Connection Status */
+        .connection-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .status-connected {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+        
+        .status-disconnected {
+            background: var(--danger);
+            box-shadow: 0 0 10px var(--danger);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-sidebar {
+                width: 100%;
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 40px 0 60px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            header p {
+                font-size: 1.1rem;
+            }
+            
+            .form-container, .success-container {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 30px 0 50px;
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%);
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            header p {
+                font-size: 1rem;
+            }
+            
+            .form-container, .success-container {
+                padding: 25px;
+            }
+            
+            .registration-id {
+                font-size: 1.3rem;
+                padding: 15px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-shape bg-shape-1"></div>
+    <div class="bg-shape bg-shape-2"></div>
+    
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Processing your submission...</p>
+        <p>Connecting to backend system</p>
+    </div>
+
+    <header>
+        <div class="header-content">
+            <div class="logo-container">
+                <div class="logo">
+                    <img src='https://i.postimg.cc/ctKSwrkj/Smile-logo.png' border='0' alt='Smile-logo' />
+                </div>
+            </div>
+            <h1>Reels Competition</h1>
+            <p>Showcase your creativity and win exciting prizes at Apex Smile Festival 2025</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div id="alertBox" class="alert" style="display: none;"></div>
+        
+        <div class="success-container" id="successContainer">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Registration Successful!</h2>
+            <p>Your registration for the Reels Competition has been confirmed.</p>
+            <p>Don't forget to submit your reel before the deadline!</p>
+            
+            <div class="registration-id" id="registrationIdDisplay"></div>
+            <p>Keep this registration ID for future reference.</p>
+            
+            <div class="folder-link" style="margin-top: 30px;">
+                <a href="#" id="folderLink" class="btn" style="width: auto; margin: 0 auto; max-width: 300px;">
+                    <i class="fas fa-folder-open"></i> View Your Submission Folder
+                </a>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <button id="newRegistrationBtn" class="btn" style="background: var(--dark-gray); max-width: 300px; margin: 0 auto;">
+                    <i class="fas fa-plus-circle"></i> Create New Registration
+                </button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <form id="reelsForm" class="form-container">
+                <div class="form-header">
+                    <h2>Registration Form</h2>
+                    <p>Fill in your details to participate in the competition</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="name">Full Name <span class="required">*</span></label>
+                    <input type="text" id="name" name="name" required placeholder="Your full name">
+                    <div class="error-message" id="nameError">Please enter your full name</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="program">Program <span class="required">*</span></label>
+                    <select id="program" name="program" required>
+                        <option value="">Select your program</option>
+                        <option value="BBA-FINANCE">BBA-FINANCE</option>
+                        <option value="BBA-TT">BBA-TT</option>
+                        <option value="BBA">BBA</option>
+                        <option value="BCSIT">BCSIT</option>
+                        <option value="BCIS">BCIS</option>
+                        <option value="BBA-BI">BBA-BI</option>
+                    </select>
+                    <div class="error-message" id="programError">Please select your program</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required placeholder="example@domain.com">
+                    <div class="error-message" id="emailError">Please enter a valid email address</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contact">Contact Number <span class="required">*</span></label>
+                    <input type="tel" id="contact" name="contact" required placeholder="98XXXXXXXX">
+                    <div class="error-message" id="contactError">Please enter a valid 10-digit phone number</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="semester">Semester <span class="required">*</span></label>
+                    <select id="semester" name="semester" required>
+                        <option value="">Select your semester</option>
+                        <option value="First Semester">First Semester</option>
+                        <option value="Second Semester">Second Semester</option>
+                        <option value="Third Semester">Third Semester</option>
+                        <option value="Fourth Semester">Fourth Semester</option>
+                        <option value="Fifth Semester">Fifth Semester</option>
+                        <option value="Sixth Semester">Sixth Semester</option>
+                        <option value="Seventh Semester">Seventh Semester</option>
+                        <option value="Eighth Semester">Eighth Semester</option>
+                    </select>
+                    <div class="error-message" id="semesterError">Please select your semester</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reelLink">Instagram Reel Link <span class="required">*</span></label>
+                    <input type="url" id="reelLink" name="reelLink" required placeholder="https://www.instagram.com/reel/...">
+                    <div class="error-message" id="reelLinkError">Please enter a valid Instagram reel URL</div>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-paper-plane"></i> Submit Registration
+                </button>
+            </form>
+            
+            <div class="info-sidebar">
+                <div class="info-card">
+                    <h3><i class="fas fa-info-circle"></i> Competition Guidelines</h3>
+                    <ul>
+                        <li>Upload your reel on Instagram</li>
+                        <li>Use required hashtags</li>
+                        <li>Keep account public until winners announced</li>
+                        <li>Duration: 15-30 seconds (max 1 min)</li>
+                        <li>Content must be original and creative</li>
+                        <li>Maximum 2 entries per participant</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card deadline-card">
+                    <h3><i class="fas fa-calendar-alt"></i> Important Dates</h3>
+                    <ul>
+                        <li>Submission opens: June 26, 2025</li>
+                        <li>Submission deadline: July 5, 2025</li>
+                        <li>Finalists announced: July 11, 2025</li>
+                        <li>Winners announced at festival</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-hashtag"></i> Required Hashtags</h3>
+                    <ul>
+                        <li>#ApexSmileFestival2025</li>
+                        <li>#apexmediamarketingclub</li>
+                        <li>#ReelsCompetition</li>
+                        <li>#ApexCollege</li>
+                        <li>#SmileWithApex</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-trophy"></i> Prizes</h3>
+                    <ul>
+                        <li>1st Place: NPR 25,000 + Trophy</li>
+                        <li>2nd Place: NPR 15,000 + Trophy</li>
+                        <li>3rd Place: NPR 10,000 + Trophy</li>
+                        <li>5 Special Mentions: Festival Gift Hampers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; Apex Smile Festival 2025. All rights reserved.</p>
+        <p>Contact: <a href="mailto:apexmediaandmarketing@apexcollege.edu.np">apexmediaandmarketing@apexcollege.edu.np</a> | Phone: +977 9840530506</p>
+        <p>Organized by Apex Media & Marketing Club</p>
+    </footer>
+    
+    <div class="connection-status">
+        <span class="status-indicator" id="statusIndicator"></span>
+        <span id="statusText">Connecting to backend...</span>
+    </div>
+
+    <script>
+        // Google Apps Script JSONP proxy solution for CORS
+        class GoogleAppsScriptProxy {
+            constructor(scriptId) {
+                this.scriptId = scriptId;
+                this.callbacks = {};
+                this.callbackId = 0;
+            }
+
+            call(method, params, callback) {
+                const callbackName = `callback_${this.callbackId++}`;
+                this.callbacks[callbackName] = callback;
+                
+                const script = document.createElement('script');
+                const url = `https://script.google.com/macros/s/${this.scriptId}/exec?` + 
+                            `method=${encodeURIComponent(method)}&` + 
+                            `parameters=${encodeURIComponent(JSON.stringify(params))}&` + 
+                            `callback=${callbackName}`;
+                
+                script.src = url;
+                document.head.appendChild(script);
+                
+                // Clean up after callback
+                script.onload = () => {
+                    delete this.callbacks[callbackName];
+                    document.head.removeChild(script);
+                };
+                
+                // Handle error
+                script.onerror = () => {
+                    delete this.callbacks[callbackName];
+                    document.head.removeChild(script);
+                    callback({ status: 'error', message: 'Script load failed' });
+                };
+            }
+        }
+
+        // Create proxy instance
+        const gasProxy = new GoogleAppsScriptProxy(SCRIPT_ID);
+        
+        // Make the callback available globally
+        window.handleGoogleScriptResponse = function(callbackName, response) {
+            if (gasProxy.callbacks[callbackName]) {
+                gasProxy.callbacks[callbackName](response);
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('reelsForm');
+            const alertBox = document.getElementById('alertBox');
+            const successContainer = document.getElementById('successContainer');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const registrationIdDisplay = document.getElementById('registrationIdDisplay');
+            const folderLink = document.getElementById('folderLink');
+            const newRegistrationBtn = document.getElementById('newRegistrationBtn');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            // Check backend connection
+            function checkBackendConnection() {
+                gasProxy.call('ping', {}, (response) => {
+                    if (response && response.status === 'success') {
+                        statusIndicator.className = 'status-indicator status-connected';
+                        statusText.textContent = 'Backend Connected';
+                    } else {
+                        statusIndicator.className = 'status-indicator status-disconnected';
+                        statusText.textContent = 'Backend Connection Failed';
+                    }
+                });
+            }
+            
+            // Initial connection check
+            checkBackendConnection();
+            
+            // New registration button
+            newRegistrationBtn.addEventListener('click', function() {
+                successContainer.style.display = 'none';
+                form.style.display = 'block';
+                form.reset();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Hide any existing alerts
+                alertBox.style.display = 'none';
+                
+                // Validate form
+                if (validateForm()) {
+                    // Get form data
+                    const formData = {
+                        name: document.getElementById('name').value,
+                        program: document.getElementById('program').value,
+                        email: document.getElementById('email').value,
+                        contact: document.getElementById('contact').value,
+                        semester: document.getElementById('semester').value,
+                        reelLink: document.getElementById('reelLink').value
+                    };
+                    
+                    // Show loading overlay
+                    loadingOverlay.style.display = 'flex';
+                    
+                    // Submit to backend using JSONP
+                    gasProxy.call('submitReelsRegistration', formData, (response) => {
+                        if (response && response.status === 'success') {
+                            handleSuccess(response);
+                        } else {
+                            handleError(response || { message: 'Unknown error' });
+                        }
+                    });
+                } else {
+                    showAlert('Please fill in all required fields correctly.', 'danger');
+                }
+            });
+            
+            function handleSuccess(response) {
+                // Hide loading overlay
+                loadingOverlay.style.display = 'none';
+                
+                // Update registration ID display
+                registrationIdDisplay.textContent = response.details.registrationId;
+                
+                // Set folder link
+                folderLink.href = response.details.folderUrl;
+                
+                // Show success message
+                form.style.display = 'none';
+                successContainer.style.display = 'block';
+                
+                // Scroll to success message
+                successContainer.scrollIntoView({ behavior: 'smooth' });
+                
+                // Show success alert
+                showAlert('Registration submitted successfully!', 'success');
+            }
+            
+            function handleError(error) {
+                // Hide loading overlay
+                loadingOverlay.style.display = 'none';
+                
+                // Show error message
+                showAlert(`Error: ${error.message || 'Failed to connect to backend'}`, 'danger');
+            }
+            
+            function validateForm() {
+                let isValid = true;
+                const inputs = form.querySelectorAll('input, select');
+                
+                // Reset errors
+                document.querySelectorAll('.error-message').forEach(el => {
+                    el.style.display = 'none';
+                });
+                inputs.forEach(input => input.classList.remove('error'));
+                
+                // Check each input
+                inputs.forEach(input => {
+                    if (input.hasAttribute('required') && !input.value.trim()) {
+                        isValid = false;
+                        input.classList.add('error');
+                        const errorId = input.id + 'Error';
+                        const errorEl = document.getElementById(errorId);
+                        if (errorEl) errorEl.style.display = 'block';
+                    }
+                    
+                    // Special validation for email
+                    if (input.type === 'email' && input.value.trim()) {
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(input.value)) {
+                            isValid = false;
+                            input.classList.add('error');
+                            document.getElementById('emailError').style.display = 'block';
+                        }
+                    }
+                    
+                    // Special validation for contact number
+                    if (input.id === 'contact' && input.value.trim()) {
+                        const phoneRegex = /^[0-9]{10}$/;
+                        if (!phoneRegex.test(input.value)) {
+                            isValid = false;
+                            input.classList.add('error');
+                            document.getElementById('contactError').style.display = 'block';
+                        }
+                    }
+                    
+                    // Special validation for reel link
+                    if (input.id === 'reelLink' && input.value.trim()) {
+                        const instaRegex = /https?:\/\/(www\.)?instagram\.com\/reel\/.+/;
+                        if (!instaRegex.test(input.value)) {
+                            isValid = false;
+                            input.classList.add('error');
+                            document.getElementById('reelLinkError').style.display = 'block';
+                        }
+                    }
+                });
+                
+                return isValid;
+            }
+            
+            function showAlert(message, type) {
+                alertBox.textContent = message;
+                alertBox.className = `alert alert-${type}`;
+                alertBox.style.display = 'block';
+                
+                // Auto hide after 5 seconds
+                setTimeout(() => {
+                    alertBox.style.display = 'none';
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
