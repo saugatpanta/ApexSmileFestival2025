@@ -7,10 +7,7 @@
     <link rel="icon" href="https://raw.githubusercontent.com/saugatpanta/icon/main/Smile%20logo.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script>
-        // Your Google Apps Script deployment ID
-        const SCRIPT_ID = 'AKfycbx8u2wGhtRwsY4bn7ZV8CkJmW_rqrj1mUiyZVcS8Mq6N16lOCjIqS5AXuyFLwtaHFcz';
-    </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <style>
         :root {
             --primary: #FF5E62;
@@ -675,12 +672,6 @@
             <div class="registration-id" id="registrationIdDisplay"></div>
             <p>Keep this registration ID for future reference.</p>
             
-            <div class="folder-link" style="margin-top: 30px;">
-                <a href="#" id="folderLink" class="btn" style="width: auto; margin: 0 auto; max-width: 300px;">
-                    <i class="fas fa-folder-open"></i> View Your Submission Folder
-                </a>
-            </div>
-            
             <div style="margin-top: 20px;">
                 <button id="newRegistrationBtn" class="btn" style="background: var(--dark-gray); max-width: 300px; margin: 0 auto;">
                     <i class="fas fa-plus-circle"></i> Create New Registration
@@ -813,78 +804,22 @@
     </div>
 
     <script>
-        // Google Apps Script JSONP proxy solution for CORS
-        class GoogleAppsScriptProxy {
-            constructor(scriptId) {
-                this.scriptId = scriptId;
-                this.callbacks = {};
-                this.callbackId = 0;
-            }
-
-            call(method, params, callback) {
-                const callbackName = `callback_${this.callbackId++}`;
-                this.callbacks[callbackName] = callback;
-                
-                const script = document.createElement('script');
-                const url = `https://script.google.com/macros/s/${this.scriptId}/exec?` + 
-                            `method=${encodeURIComponent(method)}&` + 
-                            `parameters=${encodeURIComponent(JSON.stringify(params))}&` + 
-                            `callback=${callbackName}`;
-                
-                script.src = url;
-                document.head.appendChild(script);
-                
-                // Clean up after callback
-                script.onload = () => {
-                    delete this.callbacks[callbackName];
-                    document.head.removeChild(script);
-                };
-                
-                // Handle error
-                script.onerror = () => {
-                    delete this.callbacks[callbackName];
-                    document.head.removeChild(script);
-                    callback({ status: 'error', message: 'Script load failed' });
-                };
-            }
-        }
-
-        // Create proxy instance
-        const gasProxy = new GoogleAppsScriptProxy(SCRIPT_ID);
+        // Get current domain for API endpoint
+        const API_BASE_URL = window.location.origin;
         
-        // Make the callback available globally
-        window.handleGoogleScriptResponse = function(callbackName, response) {
-            if (gasProxy.callbacks[callbackName]) {
-                gasProxy.callbacks[callbackName](response);
-            }
-        };
-
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('reelsForm');
             const alertBox = document.getElementById('alertBox');
             const successContainer = document.getElementById('successContainer');
             const loadingOverlay = document.getElementById('loadingOverlay');
             const registrationIdDisplay = document.getElementById('registrationIdDisplay');
-            const folderLink = document.getElementById('folderLink');
             const newRegistrationBtn = document.getElementById('newRegistrationBtn');
             const statusIndicator = document.getElementById('statusIndicator');
             const statusText = document.getElementById('statusText');
             
-            // Check backend connection
-            function checkBackendConnection() {
-                gasProxy.call('ping', {}, (response) => {
-                    if (response && response.status === 'success') {
-                        statusIndicator.className = 'status-indicator status-connected';
-                        statusText.textContent = 'Backend Connected';
-                    } else {
-                        statusIndicator.className = 'status-indicator status-disconnected';
-                        statusText.textContent = 'Backend Connection Failed';
-                    }
-                });
-            }
-            
-            // Initial connection check
-            checkBackendConnection();
+            // Set connection status to connected by default
+            statusIndicator.className = 'status-indicator status-connected';
+            statusText.textContent = 'Backend Connected';
             
             // New registration button
             newRegistrationBtn.addEventListener('click', function() {
@@ -915,14 +850,18 @@
                     // Show loading overlay
                     loadingOverlay.style.display = 'flex';
                     
-                    // Submit to backend using JSONP
-                    gasProxy.call('submitReelsRegistration', formData, (response) => {
-                        if (response && response.status === 'success') {
-                            handleSuccess(response);
-                        } else {
-                            handleError(response || { message: 'Unknown error' });
-                        }
-                    });
+                    // Submit to backend
+                    axios.post(`${API_BASE_URL}/api/registrations`, formData)
+                        .then(response => {
+                            if (response.data.success) {
+                                handleSuccess(response.data);
+                            } else {
+                                handleError(response.data);
+                            }
+                        })
+                        .catch(error => {
+                            handleError(error.response?.data || { message: 'Failed to connect to backend' });
+                        });
                 } else {
                     showAlert('Please fill in all required fields correctly.', 'danger');
                 }
@@ -933,10 +872,7 @@
                 loadingOverlay.style.display = 'none';
                 
                 // Update registration ID display
-                registrationIdDisplay.textContent = response.details.registrationId;
-                
-                // Set folder link
-                folderLink.href = response.details.folderUrl;
+                registrationIdDisplay.textContent = response.registrationId;
                 
                 // Show success message
                 form.style.display = 'none';
