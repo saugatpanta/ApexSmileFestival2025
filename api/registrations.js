@@ -15,42 +15,26 @@ async function connectToDatabase() {
   
   try {
     await client.connect();
-    const db = client.db('apex_reels');
-    console.log("✅ MongoDB connected");
-    cachedDb = db;
-    return db;
+    cachedDb = client.db('apex_reels');
+    return cachedDb;
   } catch (error) {
-    console.error("❌ MongoDB connection error:", error);
-    throw error;
-  }
-}
-
-// Health check endpoint
-export async function healthCheck() {
-  try {
-    const db = await connectToDatabase();
-    await db.command({ ping: 1 });
-    return { status: 'connected', dbStatus: 'healthy' };
-  } catch (error) {
-    return { status: 'disconnected', error: error.message };
+    throw new Error(`MongoDB connection failed: ${error.message}`);
   }
 }
 
 export default async function handler(req, res) {
   // Health check endpoint
-  if (req.method === 'GET' && req.query.health) {
+  if (req.method === 'GET') {
     try {
-      const health = await healthCheck();
-      return res.status(200).json(health);
+      await connectToDatabase();
+      return res.status(200).json({ status: 'ready' });
     } catch (error) {
-      return res.status(500).json({ status: 'down', error: error.message });
+      return res.status(500).json({ status: 'unavailable' });
     }
   }
 
   // Registration endpoint
   if (req.method === 'POST') {
-    console.log("📝 Registration request received");
-    
     try {
       const db = await connectToDatabase();
       const registrations = db.collection('registrations');
@@ -77,9 +61,14 @@ export default async function handler(req, res) {
         });
       }
 
-      // Create new registration
-      const registrationId = generateRegistrationId();
-      const result = await registrations.insertOne({
+      // Generate ID
+      const date = new Date();
+      const dateStr = `${date.getDate()}${String(date.getMonth() + 1).padStart(2, '0')}`;
+      const randomNum = Math.floor(1000 + Math.random() * 9000);
+      const registrationId = `REEL-${dateStr}-${randomNum}`;
+
+      // Create registration
+      await registrations.insertOne({
         registrationId,
         fullName: name,
         email,
@@ -91,15 +80,13 @@ export default async function handler(req, res) {
         createdAt: new Date()
       });
 
-      console.log(`✅ Registration successful: ${registrationId}`);
       return res.status(201).json({
         success: true,
         registrationId,
-        timestamp: new Date()
+        timestamp: new Date().toISOString()
       });
 
     } catch (error) {
-      console.error('❌ Registration error:', error);
       return res.status(500).json({
         success: false,
         message: 'Server error: ' + error.message
@@ -108,11 +95,4 @@ export default async function handler(req, res) {
   }
 
   return res.status(405).json({ success: false, message: 'Method not allowed' });
-}
-
-function generateRegistrationId() {
-  const date = new Date();
-  const dateStr = `${date.getDate()}${String(date.getMonth() + 1).padStart(2, '0')}`;
-  const randomNum = Math.floor(1000 + Math.random() * 9000);
-  return `REEL-${dateStr}-${randomNum}`;
 }
