@@ -4,11 +4,14 @@ const uri = process.env.MONGODB_URI;
 let cachedDb = null;
 
 // Critical environment check
-if (!process.env.SHEET_SYNC_KEY) {
-  console.error('❌ CRITICAL ERROR: SHEET_SYNC_KEY environment variable is not set!');
-} else {
-  console.log('ℹ️ SHEET_SYNC_KEY is set');
-}
+console.log('ℹ️ Environment check:', {
+  node_env: process.env.NODE_ENV,
+  vercel_env: process.env.VERCEL_ENV,
+  key_set: !!process.env.SHEET_SYNC_KEY,
+  key_value: process.env.SHEET_SYNC_KEY ? 
+    `${process.env.SHEET_SYNC_KEY.substring(0, 4)}...${process.env.SHEET_SYNC_KEY.substring(process.env.SHEET_SYNC_KEY.length - 4)}` : 
+    'NOT SET'
+});
 
 async function connectToDatabase() {
   if (cachedDb) return cachedDb;
@@ -31,53 +34,95 @@ async function connectToDatabase() {
 }
 
 export default async function handler(req, res) {
-  // Log environment status
-  console.log('ℹ️ Environment check:', {
-    node_env: process.env.NODE_ENV,
-    vercel_env: process.env.VERCEL_ENV,
-    key_set: !!process.env.SHEET_SYNC_KEY
+  console.log('🔒 Sync request received', {
+    method: req.method,
+    url: req.url,
+    query: req.query,
+    headers: {
+      'user-agent': req.headers['user-agent'],
+      'x-forwarded-for': req.headers['x-forwarded-for']
+    }
   });
 
   // Verify API key from multiple sources
-  const apiKey = 
-    req.query.key || 
-    req.headers['x-api-key'] || 
-    req.headers['authorization']?.split(' ')[1];
+  const apiKeySources = {
+    queryParam: req.query.key,
+    xApiKeyHeader: req.headers['x-api-key'],
+    authHeader: req.headers['authorization']?.split(' ')[1],
+    apexKeyHeader: req.headers['x-apex-key']
+  };
   
+  console.log('🔑 Key sources:', apiKeySources);
+
+  const apiKey = apiKeySources.queryParam || 
+                 apiKeySources.xApiKeyHeader || 
+                 apiKeySources.authHeader || 
+                 apiKeySources.apexKeyHeader;
+
   // Mask keys for security
   const maskKey = (key) => {
     if (!key) return 'none';
-    if (key.length < 8) return 'invalid';
+    if (key.length < 8) return 'too_short';
     return `${key.substring(0, 4)}...${key.substring(key.length - 4)}`;
   };
   
   const maskedReceived = maskKey(apiKey);
   const maskedExpected = maskKey(process.env.SHEET_SYNC_KEY);
-  
-  console.log(`🔑 Received Key: ${maskedReceived}`);
-  console.log(`🔑 Expected Key: ${maskedExpected}`);
 
-  // Validate API key
+  // Validate API key existence on server
   if (!process.env.SHEET_SYNC_KEY) {
-    const errorMsg = '❌ Server misconfigured: SHEET_SYNC_KEY not set';
+    const errorMsg = '❌ Server misconfigured: SHEET_SYNC_KEY not set in Vercel environment variables';
     console.error(errorMsg);
     return res.status(500).json({ 
       success: false, 
       message: 'Server configuration error',
-      details: errorMsg
+      details: errorMsg,
+      help: 'Run "vercel env add SHEET_SYNC_KEY" and redeploy'
     });
   }
 
-  if (!apiKey || apiKey !== process.env.SHEET_SYNC_KEY) {
-    const errorMsg = `❌ Invalid API key: Received ${maskedReceived}, Expected ${maskedExpected}`;
+  // Handle missing key in request
+  if (!apiKey) {
+    const errorMsg = '❌ API key not found in request';
+    console.error(errorMsg, {
+      receivedSources: Object.entries(apiKeySources)
+        .filter(([_, value]) => value)
+        .map(([key]) => key),
+      headers: Object.keys(req.headers)
+    });
+    
+    return res.status(401).json({ 
+      success: false, 
+      message: 'API key required',
+      receivedKey: 'none',
+      expectedKey: maskedExpected,
+      help: 'Send key in query param (?key=) or X-API-Key header'
+    });
+  }
+
+  // Handle key mismatch
+  if (apiKey !== process.env.SHEET_SYNC_KEY) {
+    const errorMsg = `❌ API key mismatch: Received ${maskedReceived}, Expected ${maskedExpected}`;
     console.error(errorMsg);
+    
+    // Character-by-character comparison
+    const vercelKey = process.env.SHEET_SYNC_KEY || '';
+    let mismatchPosition = -1;
+    for (let i = 0; i < Math.max(apiKey.length, vercelKey.length); i++) {
+      if (apiKey[i] !== vercelKey[i]) {
+        mismatchPosition = i;
+        break;
+      }
+    }
     
     return res.status(401).json({ 
       success: false, 
       message: 'Invalid API key',
       receivedKey: maskedReceived,
       expectedKey: maskedExpected,
-      help: 'Verify SHEET_SYNC_KEY matches in Vercel and Apps Script'
+      mismatchPosition,
+      help: 'Verify key matches in Vercel and Apps Script',
+      keySources: apiKeySources
     });
   }
 
@@ -102,8 +147,7 @@ export default async function handler(req, res) {
     console.error('❌ Database error:', error.message);
     return res.status(500).json({
       success: false,
-      message: 'Server error: ' + error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      message: 'Server error: ' + error.message
     });
   }
 }
