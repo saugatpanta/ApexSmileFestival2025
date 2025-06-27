@@ -657,9 +657,9 @@
         
         /* Connection Status */
         .connection-status {
-            position: static;
+            position: fixed;
             bottom: 20px;
-            right: 10px;
+            right: 20px;
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
             padding: 12px 20px;
@@ -746,11 +746,23 @@
                 font-size: 1.3rem;
                 padding: 15px 25px;
             }
-            .status-indicator{
-                display: inline-block;
-                margin-right: auto;
+            .connection-status {
+                bottom: 10px;
+                right: 10px;
+                padding: 10px 14px;
+                font-size: 12px;
+                gap: 6px;
             }
         }
+
+        @media (min-width: 481px) and (max-width: 1024px) {
+            .connection-status {
+                bottom: 15px;
+                right: 15px;
+                font-size: 13px;
+                padding: 11px 18px;
+            }
+         }    
     </style>
 </head>
 <body>
