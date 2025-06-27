@@ -6,76 +6,101 @@
     <title>Apex Smile Festival 2025 | Reels Competition</title>
     <link rel="icon" href="https://raw.githubusercontent.com/saugatpanta/icon/main/Smile%20logo.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <style>
         :root {
-            --primary: #FF5E62;
-            --primary-light: #FF8E8E;
-            --secondary: #FF9966;
-            --accent: #FF4274;
-            --accent-dark: #E8366B;
-            --light: #FFFFFF;
-            --light-90: rgba(255, 255, 255, 0.9);
-            --light-80: rgba(255, 255, 255, 0.8);
-            --light-70: rgba(255, 255, 255, 0.7);
-            --light-50: rgba(255, 255, 255, 0.5);
-            --light-30: rgba(255, 255, 255, 0.3);
-            --light-10: rgba(255, 255, 255, 0.1);
-            --dark: #0F0F1E;
-            --dark-90: rgba(15, 15, 30, 0.9);
-            --dark-80: rgba(15, 15, 30, 0.8);
-            --dark-70: rgba(15, 15, 30, 0.7);
-            --dark-50: rgba(15, 15, 30, 0.5);
-            --gray: #1E1E3A;
-            --dark-gray: #15152B;
-            --success: #00D2AA;
-            --success-light: #5CFFD6;
-            --warning: #FFC75F;
-            --danger: #FF6B6B;
-            --danger-light: #FF9E9E;
-            --glass: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            --shadow-sm: 0 5px 15px rgba(0, 0, 0, 0.1);
-            --inner-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.15);
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            --transition-fast: all 0.2s ease-out;
-            --border-radius: 16px;
-            --card-radius: 12px;
-            --input-radius: 10px;
-            --btn-radius: 10px;
+            --neon-pink: #ff2a6d;
+            --neon-blue: #05d9e8;
+            --neon-purple: #d300c5;
+            --neon-green: #00ff9d;
+            --dark-space: #0d0221;
+            --deep-space: #1a1a2e;
+            --space-gray: #16213e;
+            --star-light: rgba(255, 255, 255, 0.8);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Montserrat', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Rajdhani', 'Poppins', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, var(--dark), var(--gray));
-            color: var(--light);
-            line-height: 1.6;
+            background: radial-gradient(ellipse at bottom, var(--dark-space) 0%, var(--deep-space) 100%);
+            color: white;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
-            font-weight: 400;
         }
 
         body::before {
             content: '';
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 10% 20%, rgba(255, 94, 98, 0.15) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(255, 153, 102, 0.15) 0%, transparent 25%);
+                radial-gradient(circle at 20% 30%, rgba(255, 42, 109, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(5, 217, 232, 0.1) 0%, transparent 20%);
             z-index: -1;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, var(--star-light) 0%, transparent 1%) 0 0,
+                radial-gradient(circle at 90% 80%, var(--star-light) 0%, transparent 1%) 0 0;
+            background-size: 200px 200px;
+            z-index: -1;
+            animation: pulse 10s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes neon-glow {
+            0%, 100% { 
+                text-shadow: 0 0 10px var(--neon-pink), 
+                            0 0 20px var(--neon-pink), 
+                            0 0 30px var(--neon-pink);
+            }
+            50% { 
+                text-shadow: 0 0 5px var(--neon-pink), 
+                            0 0 10px var(--neon-pink), 
+                            0 0 15px var(--neon-pink);
+            }
+        }
+
+        @keyframes border-glow {
+            0%, 100% { 
+                box-shadow: 0 0 10px var(--neon-blue),
+                            0 0 20px var(--neon-blue),
+                            inset 0 0 10px var(--neon-blue);
+            }
+            50% { 
+                box-shadow: 0 0 5px var(--neon-blue),
+                            0 0 10px var(--neon-blue),
+                            inset 0 0 5px var(--neon-blue);
+            }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .container {
@@ -86,7 +111,9 @@
 
         /* Header Styles */
         header {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
+            background: linear-gradient(135deg, rgba(13, 2, 33, 0.9), rgba(26, 26, 46, 0.9));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             color: white;
             padding: 80px 0 100px;
             text-align: center;
@@ -94,7 +121,8 @@
             overflow: hidden;
             margin-bottom: -40px;
             clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
-            box-shadow: var(--shadow);
+            border-bottom: 1px solid rgba(255, 42, 109, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .header-content {
@@ -106,21 +134,21 @@
         .logo-container {
             display: flex;
             justify-content: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             animation: float 6s ease-in-out infinite;
         }
 
         .logo {
-            width: 120px;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.95);
+            width: 140px;
+            height: 140px;
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
             border: 3px solid rgba(255, 255, 255, 0.4);
-            transition: var(--transition);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
         }
@@ -130,7 +158,7 @@
             position: absolute;
             inset: -5px;
             border-radius: 50%;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
             z-index: -1;
             opacity: 0.7;
             animation: rotate 20s linear infinite;
@@ -138,27 +166,28 @@
 
         .logo:hover {
             transform: scale(1.05) rotate(5deg);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 30px var(--neon-pink);
         }
 
         .logo img {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             object-fit: contain;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
 
         h1 {
+            font-family: 'Orbitron', sans-serif;
             font-size: 3.5rem;
             margin-bottom: 15px;
-            font-weight: 800;
-            letter-spacing: -1px;
+            font-weight: 700;
+            letter-spacing: 2px;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             background: linear-gradient(to right, #fff, #ffe8e8);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            font-family: 'Poppins', sans-serif;
+            animation: neon-glow 2s infinite alternate;
         }
 
         header p {
@@ -182,23 +211,26 @@
 
         /* Form Container */
         .form-container {
-            background: var(--glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: var(--border-radius);
+            background: rgba(22, 33, 62, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 15px;
             padding: 40px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3),
+                        inset 0 0 15px rgba(5, 217, 232, 0.2);
             margin-bottom: 60px;
             position: relative;
-            border: 1px solid var(--glass-border);
+            border: 1px solid rgba(5, 217, 232, 0.3);
             z-index: 2;
             transform: translateY(0);
-            transition: var(--transition);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .form-container:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+                        inset 0 0 20px rgba(5, 217, 232, 0.3);
+            border-color: rgba(5, 217, 232, 0.5);
         }
 
         .form-header {
@@ -207,18 +239,19 @@
         }
 
         .form-header h2 {
-            font-size: 2.2rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.4rem;
             margin-bottom: 10px;
             font-weight: 700;
-            background: linear-gradient(to right, var(--light), #ffd1d9);
+            background: linear-gradient(to right, var(--neon-blue), #00ffd5);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            font-family: 'Poppins', sans-serif;
+            letter-spacing: 1px;
         }
 
         .form-header p {
-            color: var(--light-80);
+            color: rgba(255, 255, 255, 0.8);
             font-size: 1.1rem;
         }
 
@@ -232,57 +265,58 @@
             display: block;
             margin-bottom: 10px;
             font-weight: 500;
-            color: var(--light-90);
-            font-size: 0.95rem;
+            color: var(--neon-blue);
+            font-size: 1rem;
             padding-left: 10px;
         }
 
         .required {
-            color: var(--accent);
+            color: var(--neon-pink);
             margin-left: 3px;
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 15px 20px;
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid var(--light-10);
-            border-radius: var(--input-radius);
+            padding: 16px 20px;
+            background: rgba(13, 2, 33, 0.5);
+            border: 1px solid rgba(5, 217, 232, 0.3);
+            border-radius: 12px;
             font-size: 16px;
-            transition: var(--transition-fast);
+            transition: all 0.3s ease;
             font-family: inherit;
-            color: var(--light);
+            color: white;
             outline: none;
         }
 
         input::placeholder, textarea::placeholder {
-            color: var(--light-50);
+            color: rgba(255, 255, 255, 0.5);
         }
 
         input:focus, select:focus, textarea:focus {
-            border-color: var(--primary);
-            background: rgba(0, 0, 0, 0.35);
-            box-shadow: 0 0 0 3px rgba(255, 94, 98, 0.3);
+            border-color: var(--neon-blue);
+            background: rgba(13, 2, 33, 0.7);
+            box-shadow: 0 0 0 3px rgba(5, 217, 232, 0.3);
         }
 
         /* Button Styles */
         .btn {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
             color: white;
             border: none;
-            padding: 16px 32px;
-            border-radius: var(--btn-radius);
+            padding: 18px 32px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 600;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             display: inline-block;
             text-align: center;
             width: 100%;
-            box-shadow: 0 8px 20px rgba(255, 94, 98, 0.3);
+            box-shadow: 0 8px 20px rgba(255, 42, 109, 0.3);
             position: relative;
             overflow: hidden;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .btn::before {
@@ -297,9 +331,8 @@
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(255, 94, 98, 0.4);
-            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(255, 42, 109, 0.4);
         }
 
         .btn:hover::before {
@@ -307,7 +340,7 @@
         }
 
         .btn:active {
-            transform: translateY(0);
+            transform: translateY(-2px);
         }
 
         /* Info Sidebar */
@@ -321,35 +354,38 @@
         }
 
         .info-card {
-            background: var(--glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: var(--border-radius);
+            background: rgba(22, 33, 62, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 15px;
             padding: 30px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3),
+                        inset 0 0 15px rgba(5, 217, 232, 0.2);
+            border: 1px solid rgba(5, 217, 232, 0.3);
             transform: translateY(0);
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
         .info-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+                        inset 0 0 20px rgba(5, 217, 232, 0.3);
+            border-color: rgba(5, 217, 232, 0.5);
         }
 
         .info-card h3 {
+            font-family: 'Orbitron', sans-serif;
             font-size: 1.4rem;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
-            color: var(--light);
-            font-family: 'Poppins', sans-serif;
+            color: var(--neon-blue);
         }
 
         .info-card h3 i {
             margin-right: 12px;
             font-size: 1.6rem;
-            background: linear-gradient(to right, var(--primary), var(--accent));
+            background: linear-gradient(to right, var(--neon-pink), var(--neon-purple));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -363,8 +399,7 @@
             margin-bottom: 15px;
             position: relative;
             padding-left: 30px;
-            color: var(--light-80);
-            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.85);
         }
 
         .info-card li::before {
@@ -373,16 +408,16 @@
             left: 0;
             top: 0;
             font-weight: bold;
-            color: var(--primary);
+            color: var(--neon-pink);
         }
 
         .deadline-card {
-            background: linear-gradient(135deg, rgba(255, 94, 98, 0.15), rgba(255, 66, 116, 0.2));
+            background: linear-gradient(135deg, rgba(255, 42, 109, 0.15), rgba(211, 0, 197, 0.2));
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .deadline-card li::before {
-            color: var(--light);
+            color: var(--neon-pink);
         }
 
         /* Loading Overlay */
@@ -403,39 +438,117 @@
             backdrop-filter: blur(10px);
         }
 
-        .spinner {
-            width: 70px;
-            height: 70px;
-            border: 5px solid rgba(255, 255, 255, 0.1);
+        .cyber-loader {
+            width: 80px;
+            height: 80px;
+            border: 8px solid rgba(5, 217, 232, 0.2);
+            border-top-color: var(--neon-blue);
             border-radius: 50%;
-            border-top-color: var(--primary);
-            animation: spin 1s linear infinite;
+            position: relative;
+            animation: rotate 1.5s linear infinite;
             margin-bottom: 25px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .cyber-loader::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            border: 8px solid rgba(255, 42, 109, 0.2);
+            border-top-color: var(--neon-pink);
+            border-radius: 50%;
+            animation: rotate 2s linear infinite reverse;
+        }
+
+        .cyber-loader::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 8px solid rgba(0, 255, 157, 0.2);
+            border-top-color: var(--neon-green);
+            border-radius: 50%;
+            animation: rotate 2.5s linear infinite;
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+            max-width: 350px;
+            width: 100%;
+        }
+
+        .cyber-toast {
+            background: rgba(13, 2, 33, 0.9);
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 15px rgba(5, 217, 232, 0.5);
+            animation: border-glow 2s infinite alternate;
+            border-left: 4px solid;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+            backdrop-filter: blur(10px);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .cyber-toast.show {
+            display: block;
+            transform: translateX(0);
+        }
+
+        .cyber-toast.success {
+            border-left-color: var(--neon-green);
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+        }
+
+        .cyber-toast.error {
+            border-left-color: var(--neon-pink);
+            box-shadow: 0 0 15px rgba(255, 42, 109, 0.3);
+        }
+
+        .cyber-toast.warning {
+            border-left-color: var(--neon-purple);
+            box-shadow: 0 0 15px rgba(211, 0, 197, 0.3);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         /* Success Container */
         .success-container {
             display: none;
-            background: var(--glass);
-            backdrop-filter: blur(16px);
-            border-radius: var(--border-radius);
+            background: rgba(22, 33, 62, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 15px;
             padding: 50px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3),
+                        inset 0 0 15px rgba(5, 217, 232, 0.2);
             text-align: center;
             margin-bottom: 60px;
-            border: 1px solid var(--glass-border);
+            border: 1px solid rgba(5, 217, 232, 0.3);
             animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform: translateY(0);
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
         .success-container:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+                        inset 0 0 20px rgba(5, 217, 232, 0.3);
+            border-color: rgba(5, 217, 232, 0.5);
         }
 
         @keyframes popIn {
@@ -446,7 +559,7 @@
         .success-icon {
             font-size: 5.5rem;
             margin-bottom: 25px;
-            background: linear-gradient(to right, var(--success), var(--success-light));
+            background: linear-gradient(to right, var(--neon-green), #00ffd5);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -459,23 +572,23 @@
         }
 
         .registration-id {
+            font-family: 'Orbitron', sans-serif;
             font-size: 1.7rem;
             font-weight: bold;
             margin: 30px 0;
             padding: 18px 35px;
-            background: rgba(0, 0, 0, 0.25);
-            border-radius: var(--input-radius);
+            background: rgba(13, 2, 33, 0.5);
+            border-radius: 12px;
             display: inline-block;
-            border: 1px solid var(--light-10);
-            font-family: 'Courier New', monospace;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
             letter-spacing: 1px;
-            color: var(--primary);
-            box-shadow: var(--inner-shadow);
         }
 
         /* Error Styles */
         .error-message {
-            color: var(--danger);
+            color: var(--neon-pink);
             font-size: 0.9rem;
             margin-top: 8px;
             display: none;
@@ -484,107 +597,8 @@
         }
 
         input.error, select.error {
-            border-color: var(--danger);
-            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.3);
-        }
-
-        /* Toast Notification */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            max-width: 350px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .toast {
-            padding: 18px 25px;
-            border-radius: var(--card-radius);
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transform: translateX(120%);
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .toast.show {
-            transform: translateX(0);
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .toast-success {
-            background: rgba(0, 210, 170, 0.15);
-            border-left: 4px solid var(--success);
-            color: var(--light);
-        }
-
-        .toast-danger {
-            background: rgba(255, 107, 107, 0.15);
-            border-left: 4px solid var(--danger);
-            color: var(--light);
-        }
-
-        .toast-warning {
-            background: rgba(255, 199, 95, 0.15);
-            border-left: 4px solid var(--warning);
-            color: var(--light);
-        }
-
-        .toast-icon {
-            font-size: 1.5rem;
-        }
-
-        .toast-success .toast-icon {
-            color: var(--success);
-        }
-
-        .toast-danger .toast-icon {
-            color: var(--danger);
-        }
-
-        .toast-warning .toast-icon {
-            color: var(--warning);
-        }
-
-        .toast-content {
-            flex: 1;
-        }
-
-        .toast-title {
-            font-weight: 600;
-            margin-bottom: 5px;
-            font-size: 1rem;
-        }
-
-        .toast-message {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .toast-close {
-            background: none;
-            border: none;
-            color: var(--light-70);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            padding: 0;
-            line-height: 1;
-        }
-
-        .toast-close:hover {
-            color: var(--light);
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 0 3px rgba(255, 42, 109, 0.3);
         }
 
         /* Background Elements */
@@ -600,7 +614,7 @@
         .bg-shape-1 {
             width: 500px;
             height: 500px;
-            background: var(--primary);
+            background: var(--neon-pink);
             top: 10%;
             left: 5%;
         }
@@ -608,31 +622,22 @@
         .bg-shape-2 {
             width: 600px;
             height: 600px;
-            background: var(--accent);
+            background: var(--neon-purple);
             bottom: 10%;
             right: 5%;
             animation-delay: 2s;
-        }
-
-        @keyframes float {
-            0% { transform: translate(0, 0); }
-            50% { transform: translate(20px, 20px); }
-            100% { transform: translate(0, 0); }
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
         }
 
         /* Footer */
         footer {
             text-align: center;
             padding: 40px 0;
-            color: var(--light-70);
+            color: rgba(255, 255, 255, 0.6);
             font-size: 0.95rem;
-            border-top: 1px solid var(--light-10);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
             margin-top: 20px;
+            background: rgba(13, 2, 33, 0.8);
+            backdrop-filter: blur(10px);
         }
 
         footer p {
@@ -640,13 +645,13 @@
         }
 
         footer a {
-            color: var(--primary);
+            color: var(--neon-blue);
             text-decoration: none;
-            transition: var(--transition-fast);
+            transition: all 0.3s ease;
         }
 
         footer a:hover {
-            color: var(--light);
+            color: var(--neon-pink);
             text-decoration: underline;
         }
         
@@ -664,9 +669,8 @@
             gap: 10px;
             font-size: 14px;
             z-index: 100;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--light-10);
-            transition: var(--transition-fast);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
         .status-indicator {
@@ -674,17 +678,16 @@
             height: 12px;
             border-radius: 50%;
             display: inline-block;
-            transition: var(--transition-fast);
         }
         
         .status-connected {
-            background: var(--success);
-            box-shadow: 0 0 10px var(--success);
+            background: var(--neon-green);
+            box-shadow: 0 0 10px var(--neon-green);
         }
         
         .status-disconnected {
-            background: var(--danger);
-            box-shadow: 0 0 10px var(--danger);
+            background: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
         }
 
         /* Responsive Styles */
@@ -701,7 +704,7 @@
 
         @media (max-width: 768px) {
             header {
-                padding: 60px 0 80px;
+                padding: 40px 0 60px;
             }
             
             h1 {
@@ -719,7 +722,7 @@
 
         @media (max-width: 480px) {
             header {
-                padding: 40px 0 60px;
+                padding: 30px 0 50px;
                 clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%);
             }
             
@@ -739,24 +742,21 @@
                 font-size: 1.3rem;
                 padding: 15px 25px;
             }
-
-            .toast-container {
-                max-width: calc(100% - 40px);
-            }
         }
     </style>
 </head>
 <body>
+    <div class="stars"></div>
     <div class="bg-shape bg-shape-1"></div>
     <div class="bg-shape bg-shape-2"></div>
     
-    <div class="toast-container" id="toastContainer"></div>
-    
     <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
+        <div class="cyber-loader"></div>
         <p>Processing your submission...</p>
         <p>Connecting to backend system</p>
     </div>
+
+    <div class="toast-container" id="toastContainer"></div>
 
     <header>
         <div class="header-content">
@@ -765,7 +765,7 @@
                     <img src='https://i.postimg.cc/ctKSwrkj/Smile-logo.png' border='0' alt='Smile-logo' />
                 </div>
             </div>
-            <h1>Reels Competition</h1>
+            <h1>REELS COMPETITION</h1>
             <p>Showcase your creativity and win exciting prizes at Apex Smile Festival 2025</p>
         </div>
     </header>
@@ -783,7 +783,7 @@
             <p>Keep this registration ID for future reference.</p>
             
             <div style="margin-top: 20px;">
-                <button id="newRegistrationBtn" class="btn" style="background: var(--dark-gray); max-width: 300px; margin: 0 auto;">
+                <button id="newRegistrationBtn" class="btn" style="background: var(--space-gray); max-width: 300px; margin: 0 auto;">
                     <i class="fas fa-plus-circle"></i> Create New Registration
                 </button>
             </div>
@@ -792,7 +792,7 @@
         <div class="main-content">
             <form id="reelsForm" class="form-container">
                 <div class="form-header">
-                    <h2>Registration Form</h2>
+                    <h2>REGISTRATION FORM</h2>
                     <p>Fill in your details to participate in the competition</p>
                 </div>
                 
@@ -804,7 +804,7 @@
 
                 <div class="form-group">
                     <label for="program">Program <span class="required">*</span></label>
-                    <select id="program" name="program" required>
+                    <select id="program" name="program" required class="cyber-select">
                         <option value="">Select your program</option>
                         <option value="BBA-FINANCE">BBA-FINANCE</option>
                         <option value="BBA-TT">BBA-TT</option>
@@ -830,7 +830,7 @@
                 
                 <div class="form-group">
                     <label for="semester">Semester <span class="required">*</span></label>
-                    <select id="semester" name="semester" required>
+                    <select id="semester" name="semester" required class="cyber-select">
                         <option value="">Select your semester</option>
                         <option value="First Semester">First Semester</option>
                         <option value="Second Semester">Second Semester</option>
@@ -899,8 +899,8 @@
     </footer>
     
     <div class="connection-status">
-        <span class="status-indicator status-connected" id="statusIndicator"></span>
-        <span id="statusText">Backend Connected</span>
+        <span class="status-indicator" id="statusIndicator"></span>
+        <span id="statusText">Connecting to backend...</span>
     </div>
 
     <script>
@@ -917,8 +917,9 @@
             const statusText = document.getElementById('statusText');
             const toastContainer = document.getElementById('toastContainer');
             
-            // Initially hide success container and show form
-            successContainer.style.display = 'none';
+            // Set connection status to connected by default
+            statusIndicator.className = 'status-indicator status-connected';
+            statusText.textContent = 'Backend Connected';
             
             // New registration button
             newRegistrationBtn.addEventListener('click', function() {
@@ -946,33 +947,20 @@
                     // Show loading overlay
                     loadingOverlay.style.display = 'flex';
                     
-                    // Simulate connection status check
-                    statusIndicator.className = 'status-indicator status-disconnected';
-                    statusText.textContent = 'Connecting to backend...';
-                    
                     // Submit to backend
                     axios.post(`${API_BASE_URL}/api/registrations`, formData)
                         .then(response => {
                             if (response.data.success) {
                                 handleSuccess(response.data);
-                                showToast('Registration Successful!', 'Your submission has been received.', 'success');
                             } else {
                                 handleError(response.data);
-                                showToast('Registration Failed', response.data.message || 'Unknown error occurred', 'danger');
                             }
                         })
                         .catch(error => {
-                            const errorMsg = error.response?.data?.message || 'Failed to connect to backend';
-                            handleError({ message: errorMsg });
-                            showToast('Error Occurred', errorMsg, 'danger');
-                        })
-                        .finally(() => {
-                            // Update connection status
-                            statusIndicator.className = 'status-indicator status-connected';
-                            statusText.textContent = 'Backend Connected';
+                            handleError(error.response?.data || { message: 'Failed to connect to backend' });
                         });
                 } else {
-                    showToast('Validation Error', 'Please fill in all required fields correctly.', 'danger');
+                    showToast('Please fill in all required fields correctly.', 'error');
                 }
             });
             
@@ -981,7 +969,7 @@
                 loadingOverlay.style.display = 'none';
                 
                 // Update registration ID display
-                registrationIdDisplay.textContent = response.registrationId || 'ASF-2025-XXXXXX';
+                registrationIdDisplay.textContent = response.registrationId;
                 
                 // Show success message
                 form.style.display = 'none';
@@ -989,11 +977,17 @@
                 
                 // Scroll to success message
                 successContainer.scrollIntoView({ behavior: 'smooth' });
+                
+                // Show success toast
+                showToast('Registration submitted successfully!', 'success');
             }
             
             function handleError(error) {
                 // Hide loading overlay
                 loadingOverlay.style.display = 'none';
+                
+                // Show error message
+                showToast(`Error: ${error.message || 'Failed to connect to backend'}`, 'error');
             }
             
             function validateForm() {
@@ -1050,32 +1044,14 @@
                 return isValid;
             }
             
-            function showToast(title, message, type) {
+            function showToast(message, type) {
                 const toast = document.createElement('div');
-                toast.className = `toast toast-${type}`;
-                
-                let icon;
-                switch(type) {
-                    case 'success':
-                        icon = 'fa-check-circle';
-                        break;
-                    case 'danger':
-                        icon = 'fa-exclamation-circle';
-                        break;
-                    case 'warning':
-                        icon = 'fa-exclamation-triangle';
-                        break;
-                    default:
-                        icon = 'fa-info-circle';
-                }
-                
+                toast.className = `cyber-toast ${type}`;
                 toast.innerHTML = `
-                    <i class="fas ${icon} toast-icon"></i>
                     <div class="toast-content">
-                        <div class="toast-title">${title}</div>
-                        <div class="toast-message">${message}</div>
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                        <span>${message}</span>
                     </div>
-                    <button class="toast-close">&times;</button>
                 `;
                 
                 toastContainer.appendChild(toast);
@@ -1083,31 +1059,33 @@
                 // Show toast
                 setTimeout(() => {
                     toast.classList.add('show');
-                }, 100);
+                }, 10);
                 
                 // Auto hide after 5 seconds
                 setTimeout(() => {
-                    hideToast(toast);
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
                 }, 5000);
-                
-                // Close button
-                toast.querySelector('.toast-close').addEventListener('click', () => {
-                    hideToast(toast);
-                });
             }
             
-            function hideToast(toast) {
-                toast.classList.remove('show');
-                setTimeout(() => {
-                    toast.remove();
-                }, 500);
+            // Test connection status
+            function checkConnection() {
+                axios.get(`${API_BASE_URL}/api/health`)
+                    .then(() => {
+                        statusIndicator.className = 'status-indicator status-connected';
+                        statusText.textContent = 'Backend Connected';
+                    })
+                    .catch(() => {
+                        statusIndicator.className = 'status-indicator status-disconnected';
+                        statusText.textContent = 'Backend Disconnected';
+                    });
             }
             
-            // Simulate initial connection status
-            setTimeout(() => {
-                statusIndicator.className = 'status-indicator status-connected';
-                statusText.textContent = 'Backend Connected';
-            }, 1500);
+            // Check connection every 30 seconds
+            checkConnection();
+            setInterval(checkConnection, 30000);
         });
     </script>
 </body>
