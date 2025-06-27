@@ -3,25 +3,28 @@ import { MongoClient } from 'mongodb';
 const uri = process.env.MONGODB_URI;
 
 export default async function handler(req, res) {
+  const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000,
+  });
+  
   try {
-    const client = new MongoClient(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 3000,
-    });
-    
     await client.connect();
     await client.db().command({ ping: 1 });
     await client.close();
     
-    return res.status(200).json({ 
+    res.status(200).json({
       status: 'connected',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      service: 'Apex Reels API',
+      version: '1.0.0'
     });
   } catch (error) {
-    return res.status(500).json({ 
+    res.status(500).json({
       status: 'disconnected',
-      error: error.message
+      error: error.message,
+      timestamp: new Date().toISOString()
     });
   }
 }
