@@ -1115,38 +1115,31 @@
             }
             
 function checkConnection() {
+  const API_BASE_URL = window.location.origin;
   const statusIndicator = document.getElementById('statusIndicator');
   const statusText = document.getElementById('statusText');
-  
-  // Show connecting state immediately
+
   statusIndicator.className = 'status-indicator status-disconnected';
   statusText.textContent = 'Checking connection...';
 
   axios.get(`${API_BASE_URL}/api/health`, { timeout: 5000 })
     .then(response => {
-      if (response.data.status === 'connected') {
+      if (response.data.status === 'operational') {
         statusIndicator.className = 'status-indicator status-connected';
-        statusText.textContent = 'Connected to backend';
+        statusText.textContent = 'System operational';
       } else {
         statusIndicator.className = 'status-indicator status-warning';
-        statusText.textContent = 'Backend OK, database disconnected';
+        statusText.textContent = 'Service degraded';
       }
     })
     .catch(error => {
       console.error('Connection check failed:', error);
       statusIndicator.className = 'status-indicator status-disconnected';
-      
-      if (error.code === 'ECONNABORTED') {
-        statusText.textContent = 'Backend timeout';
-      } else if (error.response) {
-        // Server responded with non-2xx status
-        statusText.textContent = `Backend error: ${error.response.status}`;
-      } else {
-        statusText.textContent = 'Backend unavailable';
-      }
+      statusText.textContent = error.response?.status === 404 
+        ? 'API endpoint not found' 
+        : 'Connection failed';
     });
 }
-
 // Check connection on load and every 30 seconds
 document.addEventListener('DOMContentLoaded', () => {
   checkConnection();
