@@ -677,8 +677,7 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            display: inline;
-            
+            display: inline-block;
         }
         
         .status-connected {
@@ -719,6 +718,10 @@
             .form-container, .success-container {
                 padding: 30px;
             }
+            .status-indicator{
+                display: inline-block;
+                margin-right: auto;
+            }
         }
 
         @media (max-width: 480px) {
@@ -744,8 +747,8 @@
                 padding: 15px 25px;
             }
             .status-indicator{
-                margin-right: 10rem;
-                position: fixed;
+                display: inline-block;
+                margin-right: auto;
             }
         }
     </style>
