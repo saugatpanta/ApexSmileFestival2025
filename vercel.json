@@ -1,34 +1,22 @@
 {
-  "functions": {
-    "api/*.js": {
-      "maxDuration": 30
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/*.js",
+      "use": "@vercel/node"
     }
-  },
+  ],
   "routes": [
     {
-      "src": "/api/health",
-      "dest": "/api/health.js"
-    },
-    {
-      "src": "/api/registrations",
-      "dest": "/api/registrations.js",
-      "methods": ["GET", "POST"]
-    },
-    {
-      "src": "/api/sync",
-      "dest": "/api/sync.js"
-    },
-    {
-      "src": "/",
-      "dest": "/public/index.html"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/public/index.html"
+      "dest": "/index.html",
+      "headers": {
+        "Cache-Control": "s-maxage=0"
+      }
     }
-  ],
-  "env": {
-    "MONGODB_URI": "@mongodb_uri",
-    "SHEET_SYNC_KEY": "@sheet_sync_key"
-  }
+  ]
 }
