@@ -3,14 +3,12 @@ import { MongoClient } from 'mongodb';
 const uri = process.env.MONGODB_URI;
 let cachedDb = null;
 
-// Log environment status on startup
-console.log('ℹ️ Environment check:', {
+// Debug environment variables on startup
+console.log('🚀 API Startup - Environment Variables:', {
+  mongodb_uri_set: !!uri,
+  sheet_sync_key_set: !!process.env.SHEET_SYNC_KEY,
   node_env: process.env.NODE_ENV,
-  vercel_env: process.env.VERCEL_ENV,
-  key_set: !!process.env.SHEET_SYNC_KEY,
-  key_value: process.env.SHEET_SYNC_KEY ? 
-    `${process.env.SHEET_SYNC_KEY.substring(0, 4)}...${process.env.SHEET_SYNC_KEY.substring(process.env.SHEET_SYNC_KEY.length - 4)}` : 
-    'NOT SET'
+  vercel_env: process.env.VERCEL_ENV
 });
 
 async function connectToDatabase() {
@@ -34,64 +32,60 @@ async function connectToDatabase() {
 }
 
 export default async function handler(req, res) {
-  // Log raw headers for debugging
-  console.log('🔍 Raw Headers Received:', JSON.stringify(req.headers, null, 2));
-  
-  // Extract keys using case-insensitive approach
-  const getHeader = (name) => {
-    const lowerName = name.toLowerCase();
-    for (const [key, value] of Object.entries(req.headers)) {
-      if (key.toLowerCase() === lowerName) return value;
+  // Log incoming request details
+  console.log('🔍 Incoming Request:', {
+    method: req.method,
+    url: req.url,
+    query: req.query,
+    headers: {
+      'user-agent': req.headers['user-agent'],
+      'x-forwarded-for': req.headers['x-forwarded-for']
     }
-    return null;
-  };
+  });
 
-  const apiKey = 
-    req.query.key || 
-    getHeader('x-api-key') || 
-    getHeader('x-apex-key');
-
-  // Log environment key details
-  const envKey = process.env.SHEET_SYNC_KEY || '';
-  console.log('🔐 Server Environment Key:', {
-    exists: !!envKey,
-    length: envKey.length,
-    masked: envKey ? `${envKey.substring(0, 4)}...${envKey.substring(envKey.length - 4)}` : 'none',
-    value: envKey // CAUTION: Only for debugging
+  // SIMPLIFIED AUTHENTICATION - ONLY QUERY PARAMETER
+  const apiKey = req.query.key;
+  
+  // Get server key from environment
+  const serverKey = process.env.SHEET_SYNC_KEY || '';
+  
+  // Log keys for comparison
+  console.log('🔑 Key Comparison:', {
+    received: apiKey,
+    expected: serverKey,
+    lengthMatch: apiKey?.length === serverKey?.length,
+    receivedLength: apiKey?.length,
+    expectedLength: serverKey?.length
   });
 
   // Case 1: Environment key not set
-  if (!envKey) {
+  if (!serverKey) {
     const errorMsg = '❌ Server misconfiguration: SHEET_SYNC_KEY not set';
     console.error(errorMsg);
     return res.status(500).json({ 
       success: false, 
       message: errorMsg,
-      help: 'Add environment variable in Vercel: vercel env add SHEET_SYNC_KEY'
+      help: 'Run "vercel env add SHEET_SYNC_KEY" and redeploy'
     });
   }
 
-  // Case 2: No key found in request
+  // Case 2: No key in request
   if (!apiKey) {
-    const errorMsg = '❌ API key not found in request headers or query parameters';
-    console.error(errorMsg, {
-      headersReceived: Object.keys(req.headers),
-      queryParams: req.query
-    });
-    
+    const errorMsg = '❌ API key required in query parameter';
+    console.error(errorMsg);
     return res.status(401).json({ 
       success: false, 
-      message: 'API key required',
-      help: 'Add key to query parameter (?key=) or X-API-Key header'
+      message: errorMsg,
+      help: 'Add ?key=YOUR_API_KEY to the request URL'
     });
   }
 
   // Case 3: Key mismatch
-  if (apiKey !== envKey) {
-    // Find mismatch position
+  if (apiKey !== serverKey) {
+    // Find exact mismatch position
     let mismatchPosition = -1;
-    for (let i = 0; i < Math.max(apiKey.length, envKey.length); i++) {
-      if (apiKey[i] !== envKey[i]) {
+    for (let i = 0; i < Math.max(apiKey.length, serverKey.length); i++) {
+      if (apiKey[i] !== serverKey[i]) {
         mismatchPosition = i;
         break;
       }
@@ -99,8 +93,7 @@ export default async function handler(req, res) {
     
     console.error('❌ Key mismatch', {
       received: apiKey,
-      expected: envKey,
-      lengthMatch: apiKey.length === envKey.length,
+      expected: serverKey,
       mismatchPosition
     });
     
@@ -110,12 +103,13 @@ export default async function handler(req, res) {
       help: 'Ensure keys match exactly in Apps Script and Vercel environment',
       keyComparison: {
         receivedLength: apiKey.length,
-        expectedLength: envKey.length,
+        expectedLength: serverKey.length,
         firstMismatchPosition: mismatchPosition
       }
     });
   }
 
+  // Authentication successful - process request
   try {
     const db = await connectToDatabase();
     const registrations = db.collection('registrations');
