@@ -7,34 +7,52 @@
     <link rel="icon" href="https://raw.githubusercontent.com/saugatpanta/icon/main/Smile%20logo.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <style>
         :root {
             --primary: #FF5E62;
+            --primary-light: #FF8E8E;
             --secondary: #FF9966;
             --accent: #FF4274;
+            --accent-dark: #E8366B;
             --light: #FFFFFF;
-            --dark: #0F0F1B;
-            --gray: #1A1A2E;
-            --dark-gray: #16213E;
+            --light-90: rgba(255, 255, 255, 0.9);
+            --light-80: rgba(255, 255, 255, 0.8);
+            --light-70: rgba(255, 255, 255, 0.7);
+            --light-50: rgba(255, 255, 255, 0.5);
+            --light-30: rgba(255, 255, 255, 0.3);
+            --light-10: rgba(255, 255, 255, 0.1);
+            --dark: #0F0F1E;
+            --dark-90: rgba(15, 15, 30, 0.9);
+            --dark-80: rgba(15, 15, 30, 0.8);
+            --dark-70: rgba(15, 15, 30, 0.7);
+            --dark-50: rgba(15, 15, 30, 0.5);
+            --gray: #1E1E3A;
+            --dark-gray: #15152B;
             --success: #00D2AA;
+            --success-light: #5CFFD6;
             --warning: #FFC75F;
             --danger: #FF6B6B;
-            --glass: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.18);
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+            --danger-light: #FF9E9E;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            --shadow-sm: 0 5px 15px rgba(0, 0, 0, 0.1);
             --inner-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.15);
             --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            --border-radius: 24px;
-            --card-radius: 20px;
-            --blur: blur(16px);
+            --transition-fast: all 0.2s ease-out;
+            --border-radius: 16px;
+            --card-radius: 12px;
+            --input-radius: 10px;
+            --btn-radius: 10px;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Montserrat', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
 
         body {
@@ -44,6 +62,7 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            font-weight: 400;
         }
 
         body::before {
@@ -56,29 +75,13 @@
             background: 
                 radial-gradient(circle at 10% 20%, rgba(255, 94, 98, 0.15) 0%, transparent 20%),
                 radial-gradient(circle at 90% 80%, rgba(255, 153, 102, 0.15) 0%, transparent 25%);
-            z-index: -2;
+            z-index: -1;
         }
 
         .container {
-            max-width: 1300px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 30px;
-        }
-
-        /* Floating Particles */
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            z-index: -1;
-            animation: floatParticle 15s ease-in-out infinite;
-        }
-
-        @keyframes floatParticle {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(20px, 50px) rotate(90deg); }
-            50% { transform: translate(40px, 0) rotate(180deg); }
-            75% { transform: translate(20px, -50px) rotate(270deg); }
+            padding: 0 20px;
         }
 
         /* Header Styles */
@@ -89,8 +92,9 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            margin-bottom: -60px;
-            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            margin-bottom: -40px;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+            box-shadow: var(--shadow);
         }
 
         .header-content {
@@ -107,14 +111,14 @@
         }
 
         .logo {
-            width: 140px;
-            height: 140px;
-            background: rgba(255, 255, 255, 0.9);
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             border: 3px solid rgba(255, 255, 255, 0.4);
             transition: var(--transition);
             position: relative;
@@ -126,7 +130,7 @@
             position: absolute;
             inset: -5px;
             border-radius: 50%;
-            background: conic-gradient(from 180deg, var(--primary), var(--accent), var(--primary));
+            background: linear-gradient(45deg, var(--primary), var(--accent));
             z-index: -1;
             opacity: 0.7;
             animation: rotate 20s linear infinite;
@@ -134,198 +138,131 @@
 
         .logo:hover {
             transform: scale(1.05) rotate(5deg);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
         .logo img {
-            width: 90px;
-            height: 90px;
+            width: 80px;
+            height: 80px;
             object-fit: contain;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
 
         h1 {
             font-size: 3.5rem;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             font-weight: 800;
             letter-spacing: -1px;
-            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
             background: linear-gradient(to right, #fff, #ffe8e8);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            position: relative;
-            display: inline-block;
-        }
-
-        h1::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            border-radius: 2px;
+            font-family: 'Poppins', sans-serif;
         }
 
         header p {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             opacity: 0.9;
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
             font-weight: 300;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
         /* Main Content */
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 40px;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
             position: relative;
             z-index: 2;
-            margin-top: 60px;
+            margin-top: 40px;
         }
 
         /* Form Container */
         .form-container {
             background: var(--glass);
-            backdrop-filter: var(--blur);
-            -webkit-backdrop-filter: var(--blur);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-radius: var(--border-radius);
-            padding: 50px;
+            padding: 40px;
             box-shadow: var(--shadow);
-            margin-bottom: 80px;
+            margin-bottom: 60px;
             position: relative;
             border: 1px solid var(--glass-border);
             z-index: 2;
             transform: translateY(0);
             transition: var(--transition);
-            overflow: hidden;
-        }
-
-        .form-container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: var(--transition);
         }
 
         .form-container:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-        }
-
-        .form-container:hover::before {
-            opacity: 1;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
         }
 
         .form-header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .form-header h2 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
             font-weight: 700;
             background: linear-gradient(to right, var(--light), #ffd1d9);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            font-family: 'Poppins', sans-serif;
         }
 
         .form-header p {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 1.2rem;
-            position: relative;
-            display: inline-block;
-        }
-
-        .form-header p::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 1px;
+            color: var(--light-80);
+            font-size: 1.1rem;
         }
 
         /* Form Styles */
         .form-group {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             position: relative;
         }
 
         label {
             display: block;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             font-weight: 500;
-            color: var(--light);
-            font-size: 1.1rem;
-            padding-left: 15px;
-            position: relative;
-        }
-
-        label::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 8px;
-            height: 8px;
-            background: var(--primary);
-            border-radius: 50%;
+            color: var(--light-90);
+            font-size: 0.95rem;
+            padding-left: 10px;
         }
 
         .required {
             color: var(--accent);
-            margin-left: 5px;
-            font-weight: 700;
+            margin-left: 3px;
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 18px 25px;
+            padding: 15px 20px;
             background: rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+            border: 1px solid var(--light-10);
+            border-radius: var(--input-radius);
             font-size: 16px;
-            transition: var(--transition);
+            transition: var(--transition-fast);
             font-family: inherit;
             color: var(--light);
             outline: none;
-            box-shadow: var(--inner-shadow);
         }
 
         input::placeholder, textarea::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+            color: var(--light-50);
         }
 
         input:focus, select:focus, textarea:focus {
             border-color: var(--primary);
             background: rgba(0, 0, 0, 0.35);
-            box-shadow: 0 0 0 3px rgba(255, 94, 98, 0.3), var(--inner-shadow);
-            transform: translateY(-2px);
-        }
-
-        select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 20px center;
-            background-size: 15px;
+            box-shadow: 0 0 0 3px rgba(255, 94, 98, 0.3);
         }
 
         /* Button Styles */
@@ -333,21 +270,19 @@
             background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             border: none;
-            padding: 20px 35px;
-            border-radius: 15px;
+            padding: 16px 32px;
+            border-radius: var(--btn-radius);
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             transition: var(--transition);
             display: inline-block;
             text-align: center;
             width: 100%;
-            box-shadow: 0 10px 25px rgba(255, 94, 98, 0.4);
+            box-shadow: 0 8px 20px rgba(255, 94, 98, 0.3);
             position: relative;
             overflow: hidden;
             letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin-top: 10px;
         }
 
         .btn::before {
@@ -357,13 +292,14 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: 0.7s;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
         }
 
         .btn:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 15px 30px rgba(255, 94, 98, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 94, 98, 0.4);
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
         }
 
         .btn:hover::before {
@@ -371,18 +307,14 @@
         }
 
         .btn:active {
-            transform: translateY(-2px) scale(1.01);
-        }
-
-        .btn i {
-            margin-right: 10px;
+            transform: translateY(0);
         }
 
         /* Info Sidebar */
         .info-sidebar {
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 25px;
             position: sticky;
             top: 30px;
             height: fit-content;
@@ -390,57 +322,33 @@
 
         .info-card {
             background: var(--glass);
-            backdrop-filter: var(--blur);
-            -webkit-backdrop-filter: var(--blur);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-radius: var(--border-radius);
-            padding: 35px;
+            padding: 30px;
             box-shadow: var(--shadow);
             border: 1px solid var(--glass-border);
             transform: translateY(0);
             transition: var(--transition);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .info-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(to bottom, var(--primary), var(--accent));
         }
 
         .info-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
         }
 
         .info-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 25px;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             color: var(--light);
-            position: relative;
-            padding-bottom: 15px;
-        }
-
-        .info-card h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            border-radius: 3px;
+            font-family: 'Poppins', sans-serif;
         }
 
         .info-card h3 i {
-            margin-right: 15px;
-            font-size: 1.8rem;
+            margin-right: 12px;
+            font-size: 1.6rem;
             background: linear-gradient(to right, var(--primary), var(--accent));
             -webkit-background-clip: text;
             background-clip: text;
@@ -452,31 +360,29 @@
         }
 
         .info-card li {
-            margin-bottom: 18px;
+            margin-bottom: 15px;
             position: relative;
-            padding-left: 35px;
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.5;
+            padding-left: 30px;
+            color: var(--light-80);
+            font-size: 0.95rem;
         }
 
         .info-card li::before {
-            content: '';
+            content: '✓';
             position: absolute;
             left: 0;
-            top: 7px;
-            width: 20px;
-            height: 20px;
-            background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF5E62'%3e%3cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3e%3c/svg%3e") no-repeat center;
-            background-size: contain;
+            top: 0;
+            font-weight: bold;
+            color: var(--primary);
         }
 
         .deadline-card {
-            background: linear-gradient(135deg, rgba(255, 94, 98, 0.2), rgba(255, 66, 116, 0.25));
+            background: linear-gradient(135deg, rgba(255, 94, 98, 0.15), rgba(255, 66, 116, 0.2));
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .deadline-card li::before {
-            filter: brightness(2);
+            color: var(--light);
         }
 
         /* Loading Overlay */
@@ -486,7 +392,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(5, 5, 15, 0.95);
+            background: rgba(10, 10, 30, 0.95);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -494,169 +400,42 @@
             z-index: 1000;
             color: white;
             display: none;
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(10px);
         }
 
         .spinner {
-            width: 80px;
-            height: 80px;
-            border: 6px solid rgba(255, 255, 255, 0.1);
+            width: 70px;
+            height: 70px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             border-top-color: var(--primary);
-            animation: spin 1.2s linear infinite;
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        .spinner::before {
-            content: '';
-            position: absolute;
-            top: -6px;
-            left: -6px;
-            right: -6px;
-            bottom: -6px;
-            border: 6px solid rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
-            border-top-color: var(--accent);
-            animation: spin 1.5s linear infinite;
+            animation: spin 1s linear infinite;
+            margin-bottom: 25px;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        .loading-text {
-            font-size: 1.2rem;
-            margin-top: 10px;
-            text-align: center;
-            opacity: 0.8;
-        }
-
-        /* Alert Styles */
-        .alert-popup {
-            position: fixed;
-            top: 30px;
-            right: 30px;
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border-radius: var(--card-radius);
-            padding: 25px;
-            box-shadow: var(--shadow);
-            display: none;
-            border-left: 5px solid;
-            animation: slideIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 1001;
-            max-width: 400px;
-            transform: translateX(100%);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid var(--glass-border);
-        }
-
-        .alert-popup.show {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
-        .alert-success {
-            border-left-color: var(--success);
-        }
-
-        .alert-danger {
-            border-left-color: var(--danger);
-        }
-
-        .alert-warning {
-            border-left-color: var(--warning);
-        }
-
-        .alert-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .alert-icon {
-            font-size: 2rem;
-            margin-right: 15px;
-        }
-
-        .alert-success .alert-icon {
-            color: var(--success);
-        }
-
-        .alert-danger .alert-icon {
-            color: var(--danger);
-        }
-
-        .alert-warning .alert-icon {
-            color: var(--warning);
-        }
-
-        .alert-title {
-            font-weight: 700;
-            font-size: 1.2rem;
-        }
-
-        .alert-message {
-            font-size: 1rem;
-            line-height: 1.5;
-        }
-
-        .close-alert {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .close-alert:hover {
-            color: var(--light);
-            transform: rotate(90deg);
-        }
-
         /* Success Container */
         .success-container {
             display: none;
             background: var(--glass);
-            backdrop-filter: var(--blur);
+            backdrop-filter: blur(16px);
             border-radius: var(--border-radius);
-            padding: 60px;
+            padding: 50px;
             box-shadow: var(--shadow);
             text-align: center;
-            margin-bottom: 80px;
+            margin-bottom: 60px;
             border: 1px solid var(--glass-border);
             animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform: translateY(0);
             transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .success-container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(0,210,170,0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: var(--transition);
         }
 
         .success-container:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-        }
-
-        .success-container:hover::before {
-            opacity: 1;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
         }
 
         @keyframes popIn {
@@ -665,9 +444,9 @@
         }
 
         .success-icon {
-            font-size: 6rem;
-            margin-bottom: 30px;
-            background: linear-gradient(to right, var(--success), #00ffd5);
+            font-size: 5.5rem;
+            margin-bottom: 25px;
+            background: linear-gradient(to right, var(--success), var(--success-light));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -676,117 +455,168 @@
 
         @keyframes bounce {
             from { transform: translateY(0); }
-            to { transform: translateY(-20px); }
-        }
-
-        .success-container h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, var(--light), #d1fff5);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .success-container p {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            color: rgba(255, 255, 255, 0.9);
+            to { transform: translateY(-15px); }
         }
 
         .registration-id {
-            font-size: 2rem;
+            font-size: 1.7rem;
             font-weight: bold;
-            margin: 40px 0;
-            padding: 20px 40px;
+            margin: 30px 0;
+            padding: 18px 35px;
             background: rgba(0, 0, 0, 0.25);
-            border-radius: 15px;
+            border-radius: var(--input-radius);
             display: inline-block;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--light-10);
             font-family: 'Courier New', monospace;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             color: var(--primary);
-            box-shadow: inset 0 4px 15px rgba(0,0,0,0.1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .registration-id::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-            0% { left: -100%; }
-            20% { left: 100%; }
-            100% { left: 100%; }
+            box-shadow: var(--inner-shadow);
         }
 
         /* Error Styles */
         .error-message {
             color: var(--danger);
-            font-size: 0.95rem;
-            margin-top: 10px;
+            font-size: 0.9rem;
+            margin-top: 8px;
             display: none;
             font-weight: 500;
-            padding-left: 15px;
-            position: absolute;
-            bottom: -25px;
-            left: 0;
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-        }
-
-        @keyframes shake {
-            10%, 90% { transform: translateX(-2px); }
-            20%, 80% { transform: translateX(4px); }
-            30%, 50%, 70% { transform: translateX(-6px); }
-            40%, 60% { transform: translateX(6px); }
+            padding-left: 10px;
         }
 
         input.error, select.error {
             border-color: var(--danger);
-            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.3), var(--inner-shadow);
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.3);
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 350px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .toast {
+            padding: 18px 25px;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(120%);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .toast-success {
+            background: rgba(0, 210, 170, 0.15);
+            border-left: 4px solid var(--success);
+            color: var(--light);
+        }
+
+        .toast-danger {
+            background: rgba(255, 107, 107, 0.15);
+            border-left: 4px solid var(--danger);
+            color: var(--light);
+        }
+
+        .toast-warning {
+            background: rgba(255, 199, 95, 0.15);
+            border-left: 4px solid var(--warning);
+            color: var(--light);
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+        }
+
+        .toast-success .toast-icon {
+            color: var(--success);
+        }
+
+        .toast-danger .toast-icon {
+            color: var(--danger);
+        }
+
+        .toast-warning .toast-icon {
+            color: var(--warning);
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        .toast-message {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--light-70);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            padding: 0;
+            line-height: 1;
+        }
+
+        .toast-close:hover {
+            color: var(--light);
         }
 
         /* Background Elements */
         .bg-shape {
             position: absolute;
             border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.3;
-            z-index: -1;
-            animation: float 20s ease-in-out infinite;
+            filter: blur(80px);
+            opacity: 0.25;
+            z-index: 1;
+            animation: float 15s ease-in-out infinite;
         }
 
         .bg-shape-1 {
-            width: 600px;
-            height: 600px;
+            width: 500px;
+            height: 500px;
             background: var(--primary);
             top: 10%;
             left: 5%;
         }
 
         .bg-shape-2 {
-            width: 800px;
-            height: 800px;
+            width: 600px;
+            height: 600px;
             background: var(--accent);
             bottom: 10%;
             right: 5%;
-            animation-delay: 3s;
+            animation-delay: 2s;
         }
 
         @keyframes float {
             0% { transform: translate(0, 0); }
-            33% { transform: translate(30px, 50px); }
-            66% { transform: translate(-20px, -30px); }
+            50% { transform: translate(20px, 20px); }
             100% { transform: translate(0, 0); }
         }
 
@@ -798,33 +628,21 @@
         /* Footer */
         footer {
             text-align: center;
-            padding: 60px 0;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 40px;
-            position: relative;
-        }
-
-        footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+            padding: 40px 0;
+            color: var(--light-70);
+            font-size: 0.95rem;
+            border-top: 1px solid var(--light-10);
+            margin-top: 20px;
         }
 
         footer p {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         footer a {
             color: var(--primary);
             text-decoration: none;
-            transition: var(--transition);
-            font-weight: 500;
+            transition: var(--transition-fast);
         }
 
         footer a:hover {
@@ -835,71 +653,42 @@
         /* Connection Status */
         .connection-status {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
             background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: var(--blur);
-            padding: 15px 25px;
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
             border-radius: 50px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 15px;
+            gap: 10px;
+            font-size: 14px;
             z-index: 100;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.15);
-            transition: var(--transition);
-        }
-        
-        .connection-status:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--light-10);
+            transition: var(--transition-fast);
         }
         
         .status-indicator {
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             display: inline-block;
-            position: relative;
-        }
-        
-        .status-indicator::after {
-            content: '';
-            position: absolute;
-            inset: -3px;
-            border-radius: 50%;
-            border: 2px solid;
-            opacity: 0;
-            animation: pulse 2s infinite;
+            transition: var(--transition-fast);
         }
         
         .status-connected {
             background: var(--success);
-            box-shadow: 0 0 15px var(--success);
-        }
-        
-        .status-connected::after {
-            border-color: var(--success);
+            box-shadow: 0 0 10px var(--success);
         }
         
         .status-disconnected {
             background: var(--danger);
-            box-shadow: 0 0 15px var(--danger);
-        }
-        
-        .status-disconnected::after {
-            border-color: var(--danger);
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(0.8); opacity: 0; }
-            50% { opacity: 0.5; }
-            100% { transform: scale(1.5); opacity: 0; }
+            box-shadow: 0 0 10px var(--danger);
         }
 
         /* Responsive Styles */
-        @media (max-width: 1024px) {
+        @media (max-width: 900px) {
             .main-content {
                 grid-template-columns: 1fr;
             }
@@ -907,13 +696,6 @@
             .info-sidebar {
                 width: 100%;
                 position: static;
-                grid-template-columns: repeat(2, 1fr);
-                display: grid;
-                gap: 30px;
-            }
-            
-            .form-container, .success-container {
-                padding: 40px;
             }
         }
 
@@ -923,39 +705,7 @@
             }
             
             h1 {
-                font-size: 2.8rem;
-            }
-            
-            header p {
-                font-size: 1.2rem;
-            }
-            
-            .form-header h2 {
-                font-size: 2.2rem;
-            }
-            
-            .info-sidebar {
-                grid-template-columns: 1fr;
-            }
-            
-            .form-container, .success-container {
-                padding: 35px;
-            }
-            
-            .registration-id {
-                font-size: 1.7rem;
-                padding: 18px 35px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            header {
-                padding: 50px 0 70px;
-                clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
-            }
-            
-            h1 {
-                font-size: 2.2rem;
+                font-size: 2.5rem;
             }
             
             header p {
@@ -965,49 +715,12 @@
             .form-container, .success-container {
                 padding: 30px;
             }
-            
-            .form-header h2 {
-                font-size: 1.8rem;
-            }
-            
-            input, select {
-                padding: 16px 20px;
-            }
-            
-            .btn {
-                padding: 18px;
-                font-size: 16px;
-            }
-            
-            .success-icon {
-                font-size: 5rem;
-            }
-            
-            .success-container h2 {
-                font-size: 2rem;
-            }
-            
-            .registration-id {
-                font-size: 1.5rem;
-                padding: 15px 30px;
-                margin: 30px 0;
-            }
-            
-            .alert-popup {
-                max-width: calc(100% - 40px);
-                right: 20px;
-            }
-            
-            .connection-status {
-                bottom: 20px;
-                right: 20px;
-                padding: 12px 20px;
-            }
         }
 
-        @media (max-width: 400px) {
+        @media (max-width: 480px) {
             header {
                 padding: 40px 0 60px;
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%);
             }
             
             h1 {
@@ -1022,46 +735,27 @@
                 padding: 25px;
             }
             
-            .logo {
-                width: 120px;
-                height: 120px;
+            .registration-id {
+                font-size: 1.3rem;
+                padding: 15px 25px;
             }
-            
-            .logo img {
-                width: 80px;
-                height: 80px;
+
+            .toast-container {
+                max-width: calc(100% - 40px);
             }
         }
     </style>
 </head>
 <body>
-    <!-- Floating particles -->
-    <div class="particle" style="width: 10px; height: 10px; top: 20%; left: 10%; animation-delay: 0s;"></div>
-    <div class="particle" style="width: 15px; height: 15px; top: 70%; left: 80%; animation-delay: 2s;"></div>
-    <div class="particle" style="width: 8px; height: 8px; top: 40%; left: 30%; animation-delay: 4s;"></div>
-    <div class="particle" style="width: 12px; height: 12px; top: 60%; left: 50%; animation-delay: 6s;"></div>
-    
     <div class="bg-shape bg-shape-1"></div>
     <div class="bg-shape bg-shape-2"></div>
     
+    <div class="toast-container" id="toastContainer"></div>
+    
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
-        <p class="loading-text">Processing your submission...</p>
-        <p class="loading-text">Connecting to backend system</p>
-    </div>
-
-    <!-- Alert Popup -->
-    <div class="alert-popup" id="alertPopup">
-        <button class="close-alert" id="closeAlert">&times;</button>
-        <div class="alert-header">
-            <div class="alert-icon">
-                <i class="fas" id="alertIcon"></i>
-            </div>
-            <div>
-                <div class="alert-title" id="alertTitle">Alert Title</div>
-                <div class="alert-message" id="alertMessage">This is an alert message.</div>
-            </div>
-        </div>
+        <p>Processing your submission...</p>
+        <p>Connecting to backend system</p>
     </div>
 
     <header>
@@ -1088,8 +782,8 @@
             <div class="registration-id" id="registrationIdDisplay"></div>
             <p>Keep this registration ID for future reference.</p>
             
-            <div style="margin-top: 30px;">
-                <button id="newRegistrationBtn" class="btn" style="background: var(--dark-gray); max-width: 350px; margin: 0 auto;">
+            <div style="margin-top: 20px;">
+                <button id="newRegistrationBtn" class="btn" style="background: var(--dark-gray); max-width: 300px; margin: 0 auto;">
                     <i class="fas fa-plus-circle"></i> Create New Registration
                 </button>
             </div>
@@ -1215,68 +909,16 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('reelsForm');
-            const alertPopup = document.getElementById('alertPopup');
-            const alertTitle = document.getElementById('alertTitle');
-            const alertMessage = document.getElementById('alertMessage');
-            const alertIcon = document.getElementById('alertIcon');
-            const closeAlert = document.getElementById('closeAlert');
             const successContainer = document.getElementById('successContainer');
             const loadingOverlay = document.getElementById('loadingOverlay');
             const registrationIdDisplay = document.getElementById('registrationIdDisplay');
             const newRegistrationBtn = document.getElementById('newRegistrationBtn');
             const statusIndicator = document.getElementById('statusIndicator');
             const statusText = document.getElementById('statusText');
+            const toastContainer = document.getElementById('toastContainer');
             
-            // Create more floating particles
-            function createParticles() {
-                const container = document.body;
-                for (let i = 0; i < 10; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.width = `${Math.random() * 10 + 5}px`;
-                    particle.style.height = particle.style.width;
-                    particle.style.top = `${Math.random() * 100}%`;
-                    particle.style.left = `${Math.random() * 100}%`;
-                    particle.style.animationDelay = `${Math.random() * 10}s`;
-                    particle.style.opacity = Math.random() * 0.5 + 0.1;
-                    container.appendChild(particle);
-                }
-            }
-            
-            createParticles();
-            
-            // Close alert popup
-            closeAlert.addEventListener('click', function() {
-                hideAlert();
-            });
-            
-            // Auto-hide alert after 5 seconds
-            function autoHideAlert() {
-                setTimeout(() => {
-                    hideAlert();
-                }, 5000);
-            }
-            
-            function showAlert(title, message, type) {
-                alertTitle.textContent = title;
-                alertMessage.textContent = message;
-                alertPopup.className = `alert-popup alert-${type} show`;
-                
-                // Set icon based on type
-                if (type === 'success') {
-                    alertIcon.className = 'fas fa-check-circle';
-                } else if (type === 'danger') {
-                    alertIcon.className = 'fas fa-exclamation-circle';
-                } else if (type === 'warning') {
-                    alertIcon.className = 'fas fa-exclamation-triangle';
-                }
-                
-                autoHideAlert();
-            }
-            
-            function hideAlert() {
-                alertPopup.classList.remove('show');
-            }
+            // Initially hide success container and show form
+            successContainer.style.display = 'none';
             
             // New registration button
             newRegistrationBtn.addEventListener('click', function() {
@@ -1288,9 +930,6 @@
             
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
-                // Hide any existing alerts
-                hideAlert();
                 
                 // Validate form
                 if (validateForm()) {
@@ -1307,28 +946,33 @@
                     // Show loading overlay
                     loadingOverlay.style.display = 'flex';
                     
-                    // Simulate connection status change
+                    // Simulate connection status check
                     statusIndicator.className = 'status-indicator status-disconnected';
                     statusText.textContent = 'Connecting to backend...';
                     
-                    // Submit to backend (simulated)
-                    setTimeout(() => {
-                        statusIndicator.className = 'status-indicator status-connected';
-                        statusText.textContent = 'Backend Connected';
-                        
-                        // Simulate API response
-                        const response = {
-                            success: true,
-                            message: 'Registration successful!',
-                            registrationId: 'ASF-' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0')
-                        };
-                        
-                        if (response.success) {
-                            handleSuccess(response);
-                        } else {
-                            handleError(response);
-                        }
-                    }, 1500);
+                    // Submit to backend
+                    axios.post(`${API_BASE_URL}/api/registrations`, formData)
+                        .then(response => {
+                            if (response.data.success) {
+                                handleSuccess(response.data);
+                                showToast('Registration Successful!', 'Your submission has been received.', 'success');
+                            } else {
+                                handleError(response.data);
+                                showToast('Registration Failed', response.data.message || 'Unknown error occurred', 'danger');
+                            }
+                        })
+                        .catch(error => {
+                            const errorMsg = error.response?.data?.message || 'Failed to connect to backend';
+                            handleError({ message: errorMsg });
+                            showToast('Error Occurred', errorMsg, 'danger');
+                        })
+                        .finally(() => {
+                            // Update connection status
+                            statusIndicator.className = 'status-indicator status-connected';
+                            statusText.textContent = 'Backend Connected';
+                        });
+                } else {
+                    showToast('Validation Error', 'Please fill in all required fields correctly.', 'danger');
                 }
             });
             
@@ -1337,7 +981,7 @@
                 loadingOverlay.style.display = 'none';
                 
                 // Update registration ID display
-                registrationIdDisplay.textContent = response.registrationId;
+                registrationIdDisplay.textContent = response.registrationId || 'ASF-2025-XXXXXX';
                 
                 // Show success message
                 form.style.display = 'none';
@@ -1345,17 +989,11 @@
                 
                 // Scroll to success message
                 successContainer.scrollIntoView({ behavior: 'smooth' });
-                
-                // Show success alert
-                showAlert('Success!', 'Registration submitted successfully!', 'success');
             }
             
             function handleError(error) {
                 // Hide loading overlay
                 loadingOverlay.style.display = 'none';
-                
-                // Show error message
-                showAlert('Error!', error.message || 'Failed to connect to backend', 'danger');
             }
             
             function validateForm() {
@@ -1370,19 +1008,21 @@
                 
                 // Check each input
                 inputs.forEach(input => {
-                    if (input.hasAttribute('required') {
-                        if (!input.value.trim()) {
-                            showError(input, `${input.labels[0].textContent} is required`);
-                            isValid = false;
-                        }
+                    if (input.hasAttribute('required') && !input.value.trim()) {
+                        isValid = false;
+                        input.classList.add('error');
+                        const errorId = input.id + 'Error';
+                        const errorEl = document.getElementById(errorId);
+                        if (errorEl) errorEl.style.display = 'block';
                     }
                     
                     // Special validation for email
                     if (input.type === 'email' && input.value.trim()) {
                         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                         if (!emailRegex.test(input.value)) {
-                            showError(input, 'Please enter a valid email address');
                             isValid = false;
+                            input.classList.add('error');
+                            document.getElementById('emailError').style.display = 'block';
                         }
                     }
                     
@@ -1390,8 +1030,9 @@
                     if (input.id === 'contact' && input.value.trim()) {
                         const phoneRegex = /^[0-9]{10}$/;
                         if (!phoneRegex.test(input.value)) {
-                            showError(input, 'Please enter a valid 10-digit phone number');
                             isValid = false;
+                            input.classList.add('error');
+                            document.getElementById('contactError').style.display = 'block';
                         }
                     }
                     
@@ -1399,28 +1040,74 @@
                     if (input.id === 'reelLink' && input.value.trim()) {
                         const instaRegex = /https?:\/\/(www\.)?instagram\.com\/reel\/.+/;
                         if (!instaRegex.test(input.value)) {
-                            showError(input, 'Please enter a valid Instagram reel URL');
                             isValid = false;
+                            input.classList.add('error');
+                            document.getElementById('reelLinkError').style.display = 'block';
                         }
                     }
                 });
                 
-                if (!isValid) {
-                    showAlert('Validation Error', 'Please fix the errors in the form', 'warning');
-                }
-                
                 return isValid;
             }
             
-            function showError(input, message) {
-                input.classList.add('error');
-                const errorId = input.id + 'Error';
-                const errorEl = document.getElementById(errorId);
-                if (errorEl) {
-                    errorEl.textContent = message;
-                    errorEl.style.display = 'block';
+            function showToast(title, message, type) {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                
+                let icon;
+                switch(type) {
+                    case 'success':
+                        icon = 'fa-check-circle';
+                        break;
+                    case 'danger':
+                        icon = 'fa-exclamation-circle';
+                        break;
+                    case 'warning':
+                        icon = 'fa-exclamation-triangle';
+                        break;
+                    default:
+                        icon = 'fa-info-circle';
                 }
+                
+                toast.innerHTML = `
+                    <i class="fas ${icon} toast-icon"></i>
+                    <div class="toast-content">
+                        <div class="toast-title">${title}</div>
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <button class="toast-close">&times;</button>
+                `;
+                
+                toastContainer.appendChild(toast);
+                
+                // Show toast
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 100);
+                
+                // Auto hide after 5 seconds
+                setTimeout(() => {
+                    hideToast(toast);
+                }, 5000);
+                
+                // Close button
+                toast.querySelector('.toast-close').addEventListener('click', () => {
+                    hideToast(toast);
+                });
             }
+            
+            function hideToast(toast) {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 500);
+            }
+            
+            // Simulate initial connection status
+            setTimeout(() => {
+                statusIndicator.className = 'status-indicator status-connected';
+                statusText.textContent = 'Backend Connected';
+            }, 1500);
         });
     </script>
 </body>
