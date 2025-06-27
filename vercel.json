@@ -14,15 +14,6 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
-    {
-      "src": "api/health",
-      "dest": "api/health"
-    },
-    {
-      "src": "api/sync",
-      "dest": "api/sync"
-    },
     {
       "src": "/(.*)",
       "dest": "index.html",
