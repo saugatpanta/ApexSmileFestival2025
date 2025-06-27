@@ -1,17 +1,4 @@
-const express = require('express');
-const cors = require('cors');
-const connectDB = require('./db');
-const app = express();
-
-// Middleware
-app.use(cors());
-app.use(express.json());
-
-// Connect to MongoDB
-connectDB();
-
-// Routes
-app.use('/api/health', require('./health'));
-app.use('/api/registrations', require('./registrations'));
-
-module.exports = app;
+// This file makes Vercel treat the api directory as Serverless Functions
+module.exports = (req, res) => {
+  res.status(404).json({ message: 'Not found' });
+};
