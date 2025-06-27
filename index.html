@@ -1114,31 +1114,46 @@
                 }, 5000);
             }
             
-function checkConnection() {
+async function checkConnection() {
   const API_BASE_URL = window.location.origin;
   const statusIndicator = document.getElementById('statusIndicator');
   const statusText = document.getElementById('statusText');
 
+  // Immediate visual feedback
   statusIndicator.className = 'status-indicator status-disconnected';
-  statusText.textContent = 'Checking connection...';
+  statusText.textContent = 'Connecting...';
 
-  axios.get(`${API_BASE_URL}/api/health`, { timeout: 5000 })
-    .then(response => {
-      if (response.data.status === 'operational') {
-        statusIndicator.className = 'status-indicator status-connected';
-        statusText.textContent = 'System operational';
-      } else {
-        statusIndicator.className = 'status-indicator status-warning';
-        statusText.textContent = 'Service degraded';
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/health`, {
+      timeout: 3000,
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
       }
-    })
-    .catch(error => {
-      console.error('Connection check failed:', error);
-      statusIndicator.className = 'status-indicator status-disconnected';
-      statusText.textContent = error.response?.status === 404 
-        ? 'API endpoint not found' 
-        : 'Connection failed';
     });
+
+    if (response.data.status === 'operational') {
+      statusIndicator.className = 'status-indicator status-connected';
+      statusText.textContent = 'Connected';
+    } else {
+      statusIndicator.className = 'status-indicator status-warning';
+      statusText.textContent = 'Service degraded';
+    }
+  } catch (error) {
+    console.error('Connection check failed:', error);
+    statusIndicator.className = 'status-indicator status-disconnected';
+    
+    if (error.response) {
+      // Server responded with error status
+      statusText.textContent = `Backend error: ${error.response.status}`;
+    } else if (error.request) {
+      // No response received
+      statusText.textContent = 'No response from server';
+    } else {
+      // Other errors
+      statusText.textContent = 'Connection failed';
+    }
+  }
 }
 // Check connection on load and every 30 seconds
 document.addEventListener('DOMContentLoaded', () => {
