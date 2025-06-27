@@ -1,121 +1,100 @@
 const mongoose = require('mongoose');
-const Registration = require('./registration');
 
-module.exports = async (req, res) => {
-  // Connect to DB if not already connected
-  if (mongoose.connection.readyState !== 1) {
-    try {
-      await mongoose.connect(process.env.MONGODB_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-      });
-    } catch (err) {
-      console.error('MongoDB connection error:', err);
-      return res.status(500).json({ 
-        success: false,
-        message: 'Database connection failed',
-        error: err.message
-      });
-    }
-  }
-
-  if (req.method === 'POST') {
-    try {
-      const { name, program, email, contact, semester, reelLink } = req.body;
-      
-      // Validate required fields
-      if (!name || !program || !email || !contact || !semester || !reelLink) {
-        return res.status(400).json({ 
-          success: false,
-          message: 'All fields are required'
-        });
-      }
-      
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        return res.status(400).json({ 
-          success: false,
-          message: 'Invalid email format'
-        });
-      }
-      
-      // Validate phone number format (10 digits)
-      const phoneRegex = /^[0-9]{10}$/;
-      if (!phoneRegex.test(contact)) {
-        return res.status(400).json({ 
-          success: false,
-          message: 'Phone number must be 10 digits'
-        });
-      }
-      
-      // Validate Instagram reel URL
-      const instaRegex = /https?:\/\/(www\.)?instagram\.com\/reel\/.+/i;
-      if (!instaRegex.test(reelLink)) {
-        return res.status(400).json({ 
-          success: false,
-          message: 'Invalid Instagram reel URL. Must start with https://www.instagram.com/reel/'
-        });
-      }
-      
-      // Generate registration ID (ASF-2025-XXXX)
+const registrationSchema = new mongoose.Schema({
+  registrationId: {
+    type: String,
+    required: true,
+    unique: true,
+    index: true,
+    default: function() {
       const randomNum = Math.floor(1000 + Math.random() * 9000);
-      const registrationId = `ASF-2025-${randomNum}`;
-      
-      // Create new registration
-      const newRegistration = new Registration({
-        registrationId,
-        name,
-        program,
-        email: email.toLowerCase().trim(),
-        contact,
-        semester,
-        reelLink,
-        submittedAt: new Date()
-      });
-      
-      // Save to database
-      await newRegistration.save();
-      
-      return res.status(201).json({
-        success: true,
-        message: 'Registration submitted successfully',
-        registrationId
-      });
-      
-    } catch (error) {
-      console.error('Registration error:', error);
-      
-      // Handle duplicate key errors (unique fields)
-      if (error.code === 11000) {
-        return res.status(400).json({
-          success: false,
-          message: 'Duplicate entry',
-          error: `This ${Object.keys(error.keyPattern)[0]} is already registered`
-        });
-      }
-      
-      // Handle validation errors
-      if (error.name === 'ValidationError') {
-        return res.status(400).json({
-          success: false,
-          message: 'Validation failed',
-          error: error.message
-        });
-      }
-      
-      // Generic error handler
-      return res.status(500).json({ 
-        success: false,
-        message: 'Error processing registration',
-        error: error.message
-      });
+      return `ASF-2025-${randomNum}`;
     }
-  } else {
-    res.setHeader('Allow', ['POST']);
-    return res.status(405).json({ 
-      success: false,
-      message: 'Method not allowed'
-    });
+  },
+  name: {
+    type: String,
+    required: [true, 'Full name is required'],
+    trim: true,
+    maxlength: [100, 'Name cannot exceed 100 characters']
+  },
+  program: {
+    type: String,
+    required: [true, 'Program is required'],
+    trim: true
+  },
+  email: {
+    type: String,
+    required: [true, 'Email is required'],
+    unique: true,
+    lowercase: true,
+    trim: true,
+    validate: {
+      validator: function(v) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+      },
+      message: props => `${props.value} is not a valid email address!`
+    }
+  },
+  contact: {
+    type: String,
+    required: [true, 'Contact number is required'],
+    validate: {
+      validator: function(v) {
+        return /^[0-9]{10}$/.test(v);
+      },
+      message: props => `${props.value} is not a valid 10-digit phone number!`
+    }
+  },
+  semester: {
+    type: String,
+    required: [true, 'Semester is required'],
+    trim: true
+  },
+  reelLink: {
+    type: String,
+    required: [true, 'Reel link is required'],
+    validate: {
+      validator: function(v) {
+        return /https?:\/\/(www\.)?instagram\.com\/reel\/.+/i.test(v);
+      },
+      message: props => `Invalid Instagram reel URL! Must start with https://www.instagram.com/reel/`
+    }
+  },
+  status: {
+    type: String,
+    enum: ['Submitted', 'Approved', 'Rejected'],
+    default: 'Submitted'
+  },
+  submittedAt: {
+    type: Date,
+    default: Date.now
   }
-};
+}, {
+  timestamps: true, // Adds createdAt and updatedAt automatically
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+// Indexes for faster queries
+registrationSchema.index({ email: 1 });
+registrationSchema.index({ submittedAt: -1 });
+registrationSchema.index({ status: 1 });
+
+// Pre-save hook to ensure proper formatting
+registrationSchema.pre('save', function(next) {
+  // Trim all string fields
+  const stringFields = ['name', 'program', 'semester', 'reelLink'];
+  stringFields.forEach(field => {
+    if (this[field]) this[field] = this[field].trim();
+  });
+  
+  // Format contact to remove any non-numeric characters
+  if (this.contact) {
+    this.contact = this.contact.replace(/\D/g, '');
+  }
+  
+  next();
+});
+
+const Registration = mongoose.model('Registration', registrationSchema);
+
