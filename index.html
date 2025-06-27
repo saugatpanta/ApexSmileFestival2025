@@ -1114,22 +1114,29 @@
                 }, 5000);
             }
             
-            // Test connection status
-            // Check backend connection status
-            function checkConnection() {
-                axios.get(`${API_BASE_URL}/api/health`)
-                    .then(() => {
-                        statusIndicator.className = 'status-indicator status-connected';
-                        statusText.textContent = 'Backend Connected';
-                    })
-                    .catch(() => {
-                        statusIndicator.className = 'status-indicator status-disconnected';
-                        statusText.textContent = 'Backend Disconnected';
-                    });
-            }
-            
-            // Check connection every 30 seconds
-            setInterval(checkConnection, 30000);
+function checkConnection() {
+  axios.get(`${API_BASE_URL}/api/health`)
+    .then(response => {
+      if (response.data.status === 'connected') {
+        statusIndicator.className = 'status-indicator status-connected';
+        statusText.textContent = 'Backend Connected';
+      } else {
+        statusIndicator.className = 'status-indicator status-disconnected';
+        statusText.textContent = 'Backend Disconnected';
+      }
+    })
+    .catch(error => {
+      console.error('Connection check failed:', error);
+      statusIndicator.className = 'status-indicator status-disconnected';
+      statusText.textContent = 'Backend Unavailable';
+    });
+}
+
+// Check connection on load and every 30 seconds
+document.addEventListener('DOMContentLoaded', () => {
+  checkConnection();
+  setInterval(checkConnection, 30000);
+});
         });
     </script>
 </body>
