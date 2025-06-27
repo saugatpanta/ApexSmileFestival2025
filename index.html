@@ -692,6 +692,24 @@
             background: var(--neon-pink);
             box-shadow: 0 0 10px var(--neon-pink);
         }
+                /* Connection Status Animation */
+        .status-connected {
+            animation: pulse-green 2s infinite;
+        }
+        
+        .status-disconnected {
+            animation: pulse-red 2s infinite;
+        }
+        
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 10px var(--neon-pink); }
+            50% { box-shadow: 0 0 20px var(--neon-pink); }
+        }
 
         /* Responsive Styles */
         @media (max-width: 900px) {
@@ -941,8 +959,11 @@
             const toastContainer = document.getElementById('toastContainer');
             
             // Set connection status to connected by default
-            statusIndicator.className = 'status-indicator status-connected';
-            statusText.textContent = 'Backend Connected';
+            statusIndicator.className = 'status-indicator status-disconnected';
+            statusText.textContent = 'Connecting to backend...';
+            
+            // Check backend connection immediately
+            checkConnection();
             
             // New registration button
             newRegistrationBtn.addEventListener('click', function() {
@@ -1094,6 +1115,7 @@
             }
             
             // Test connection status
+            // Check backend connection status
             function checkConnection() {
                 axios.get(`${API_BASE_URL}/api/health`)
                     .then(() => {
@@ -1107,7 +1129,6 @@
             }
             
             // Check connection every 30 seconds
-            checkConnection();
             setInterval(checkConnection, 30000);
         });
     </script>
