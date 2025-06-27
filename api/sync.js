@@ -33,83 +33,80 @@ async function connectToDatabase() {
 }
 
 export default async function handler(req, res) {
-  console.log('🔒 Sync request received', {
-    method: req.method,
-    url: req.url,
-    query: req.query,
-    headers: {
-      'user-agent': req.headers['user-agent'],
-      'x-forwarded-for': req.headers['x-forwarded-for'],
-      'x-api-key': req.headers['x-api-key'],
-      'x-apex-key': req.headers['x-apex-key']
-    }
-  });
-
-  // Verify API key from multiple sources
-  const apiKeySources = {
+  // Log raw headers for debugging
+  console.log('🔍 Raw Headers Received:', req.headers);
+  
+  // Extract all potential key sources
+  const potentialKeys = {
     queryParam: req.query.key,
     xApiKeyHeader: req.headers['x-api-key'],
-    apexKeyHeader: req.headers['x-apex-key']
+    apexKeyHeader: req.headers['x-apex-key'],
+    authorizationHeader: req.headers['authorization']?.split(' ')[1],
+    lowercaseHeader: req.headers['x-api-key'] || req.headers['x_apex_key'] // Vercel sometimes lowercases headers
   };
   
-  console.log('🔑 Key sources:', apiKeySources);
-
-  const apiKey = apiKeySources.queryParam || 
-                 apiKeySources.xApiKeyHeader || 
-                 apiKeySources.apexKeyHeader;
-
-  // Mask keys for security
-  const maskKey = (key) => {
-    if (!key) return 'none';
-    if (key.length < 8) return 'too_short';
-    return `${key.substring(0, 4)}...${key.substring(key.length - 4)}`;
-  };
+  console.log('🔑 All Potential Key Sources:', JSON.stringify(potentialKeys, null, 2));
   
-  const maskedReceived = maskKey(apiKey);
-  const maskedExpected = maskKey(process.env.SHEET_SYNC_KEY);
+  // Find the first non-empty key
+  const apiKey = Object.values(potentialKeys).find(val => val && val.trim() !== '');
 
-  // Validate API key existence on server
-  if (!process.env.SHEET_SYNC_KEY) {
-    const errorMsg = '❌ Server misconfigured: SHEET_SYNC_KEY not set in Vercel environment variables';
+  // Log environment key details
+  const envKey = process.env.SHEET_SYNC_KEY || '';
+  console.log('🔐 Server Environment Key:', {
+    exists: !!envKey,
+    length: envKey.length,
+    masked: envKey ? `${envKey.substring(0, 4)}...${envKey.substring(envKey.length - 4)}` : 'none',
+    value: envKey // CAUTION: Only for debugging, remove in production
+  });
+
+  // Case 1: Environment key not set
+  if (!envKey) {
+    const errorMsg = '❌ Server misconfiguration: SHEET_SYNC_KEY not set';
     console.error(errorMsg);
     return res.status(500).json({ 
       success: false, 
-      message: 'Server configuration error',
-      details: errorMsg,
-      help: 'Run "vercel env add SHEET_SYNC_KEY" and redeploy'
+      message: errorMsg,
+      help: 'Add environment variable in Vercel: vercel env add SHEET_SYNC_KEY'
     });
   }
 
-  // Handle missing key in request
+  // Case 2: No key found in request
   if (!apiKey) {
-    const errorMsg = '❌ API key not found in request';
+    const errorMsg = '❌ API key not found in request headers or query parameters';
     console.error(errorMsg, {
-      receivedSources: Object.entries(apiKeySources)
-        .filter(([_, value]) => value)
-        .map(([key]) => key),
-      headers: Object.keys(req.headers)
+      headersReceived: Object.keys(req.headers),
+      queryParams: Object.keys(req.query)
     });
     
     return res.status(401).json({ 
       success: false, 
       message: 'API key required',
-      receivedKey: 'none',
-      expectedKey: maskedExpected,
-      help: 'Send key in query param (?key=) or X-API-Key header'
+      help: 'Add key to query parameter (?key=) or X-API-Key header'
     });
   }
 
-  // Handle key mismatch
-  if (apiKey !== process.env.SHEET_SYNC_KEY) {
-    const errorMsg = `❌ API key mismatch: Received ${maskedReceived}, Expected ${maskedExpected}`;
-    console.error(errorMsg);
+  // Case 3: Key mismatch
+  if (apiKey !== envKey) {
+    console.error('❌ Key mismatch', {
+      received: apiKey,
+      expected: envKey,
+      lengthMatch: apiKey.length === envKey.length,
+      characterDiff: {
+        position: findFirstMismatch(apiKey, envKey),
+        receivedChar: findFirstMismatch(apiKey, envKey) >= 0 ? apiKey.charCodeAt(findFirstMismatch(apiKey, envKey)) : 'N/A',
+        expectedChar: findFirstMismatch(apiKey, envKey) >= 0 ? envKey.charCodeAt(findFirstMismatch(apiKey, envKey)) : 'N/A'
+      }
+    });
     
     return res.status(401).json({ 
       success: false, 
       message: 'Invalid API key',
-      receivedKey: maskedReceived,
-      expectedKey: maskedExpected,
-      help: 'Verify key matches in Vercel and Apps Script'
+      help: 'Ensure keys match exactly in Apps Script and Vercel environment',
+      keyComparison: {
+        receivedLength: apiKey.length,
+        expectedLength: envKey.length,
+        firstMismatchPosition: findFirstMismatch(apiKey, envKey)
+      }
     });
   }
 
@@ -137,4 +134,12 @@ export default async function handler(req, res) {
       message: 'Server error: ' + error.message
     });
   }
+}
+
+// Helper function to find first mismatch position
+function findFirstMismatch(a, b) {
+  for (let i = 0; i < Math.max(a.length, b.length); i++) {
+    if (a[i] !== b[i]) return i;
+  }
+  return -1;
 }
