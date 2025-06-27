@@ -13,18 +13,11 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "api/$1",
-      "headers": {
-        "Cache-Control": "no-store",
-        "X-Content-Type-Options": "nosniff"
-      }
+      "dest": "api/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "index.html",
-      "headers": {
-        "Content-Type": "text/html"
-      }
+      "dest": "index.html"
     }
   ]
 }
