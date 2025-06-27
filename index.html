@@ -944,222 +944,216 @@
         <span id="statusText">Connecting to backend...</span>
     </div>
 
-    <script>
-        // Get current domain for API endpoint
-        const API_BASE_URL = window.location.origin;
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('reelsForm');
-            const successContainer = document.getElementById('successContainer');
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            const registrationIdDisplay = document.getElementById('registrationIdDisplay');
-            const newRegistrationBtn = document.getElementById('newRegistrationBtn');
-            const statusIndicator = document.getElementById('statusIndicator');
-            const statusText = document.getElementById('statusText');
-            const toastContainer = document.getElementById('toastContainer');
-            
-            // Set connection status to connected by default
-            statusIndicator.className = 'status-indicator status-disconnected';
-            statusText.textContent = 'Connecting to backend...';
-            
-            // Check backend connection immediately
-            checkConnection();
-            
-            // New registration button
-            newRegistrationBtn.addEventListener('click', function() {
-                successContainer.style.display = 'none';
-                form.style.display = 'block';
-                form.reset();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-            
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Validate form
-                if (validateForm()) {
-                    // Get form data
-                    const formData = {
-                        name: document.getElementById('name').value,
-                        program: document.getElementById('program').value,
-                        email: document.getElementById('email').value,
-                        contact: document.getElementById('contact').value,
-                        semester: document.getElementById('semester').value,
-                        reelLink: document.getElementById('reelLink').value
-                    };
-                    
-                    // Show loading overlay
-                    loadingOverlay.style.display = 'flex';
-                    
-                    // Submit to backend
-                    axios.post(`${API_BASE_URL}/api/registrations`, formData)
-                        .then(response => {
-                            if (response.data.success) {
-                                handleSuccess(response.data);
-                            } else {
-                                handleError(response.data);
-                            }
-                        })
-                        .catch(error => {
-                            handleError(error.response?.data || { message: 'Failed to connect to backend' });
-                        });
-                } else {
-                    showToast('Please fill in all required fields correctly.', 'error');
-                }
-            });
-            
-            function handleSuccess(response) {
-                // Hide loading overlay
-                loadingOverlay.style.display = 'none';
-                
-                // Update registration ID display
-                registrationIdDisplay.textContent = response.registrationId;
-                
-                // Show success message
-                form.style.display = 'none';
-                successContainer.style.display = 'block';
-                
-                // Scroll to success message
-                successContainer.scrollIntoView({ behavior: 'smooth' });
-                
-                // Show success toast
-                showToast('Registration submitted successfully!', 'success');
-            }
-            
-            function handleError(error) {
-                // Hide loading overlay
-                loadingOverlay.style.display = 'none';
-                
-                // Show error message
-                showToast(`Error: ${error.message || 'Failed to connect to backend'}`, 'error');
-            }
-            
-            function validateForm() {
-                let isValid = true;
-                const inputs = form.querySelectorAll('input, select');
-                
-                // Reset errors
-                document.querySelectorAll('.error-message').forEach(el => {
-                    el.style.display = 'none';
-                });
-                inputs.forEach(input => input.classList.remove('error'));
-                
-                // Check each input
-                inputs.forEach(input => {
-                    if (input.hasAttribute('required') && !input.value.trim()) {
-                        isValid = false;
-                        input.classList.add('error');
-                        const errorId = input.id + 'Error';
-                        const errorEl = document.getElementById(errorId);
-                        if (errorEl) errorEl.style.display = 'block';
-                    }
-                    
-                    // Special validation for email
-                    if (input.type === 'email' && input.value.trim()) {
-                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!emailRegex.test(input.value)) {
-                            isValid = false;
-                            input.classList.add('error');
-                            document.getElementById('emailError').style.display = 'block';
-                        }
-                    }
-                    
-                    // Special validation for contact number
-                    if (input.id === 'contact' && input.value.trim()) {
-                        const phoneRegex = /^[0-9]{10}$/;
-                        if (!phoneRegex.test(input.value)) {
-                            isValid = false;
-                            input.classList.add('error');
-                            document.getElementById('contactError').style.display = 'block';
-                        }
-                    }
-                    
-                    // Special validation for reel link
-                    if (input.id === 'reelLink' && input.value.trim()) {
-                        const instaRegex = /https?:\/\/(www\.)?instagram\.com\/reel\/.+/;
-                        if (!instaRegex.test(input.value)) {
-                            isValid = false;
-                            input.classList.add('error');
-                            document.getElementById('reelLinkError').style.display = 'block';
-                        }
-                    }
-                });
-                
-                return isValid;
-            }
-            
-            function showToast(message, type) {
-                const toast = document.createElement('div');
-                toast.className = `cyber-toast ${type}`;
-                toast.innerHTML = `
-                    <div class="toast-content">
-                        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-                        <span>${message}</span>
-                    </div>
-                `;
-                
-                toastContainer.appendChild(toast);
-                
-                // Show toast
-                setTimeout(() => {
-                    toast.classList.add('show');
-                }, 10);
-                
-                // Auto hide after 5 seconds
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    setTimeout(() => {
-                        toast.remove();
-                    }, 300);
-                }, 5000);
-            }
-            
-async function checkConnection() {
+<script>
+  // Get current domain for API endpoint
   const API_BASE_URL = window.location.origin;
-  const statusIndicator = document.getElementById('statusIndicator');
-  const statusText = document.getElementById('statusText');
-
-  // Immediate visual feedback
-  statusIndicator.className = 'status-indicator status-disconnected';
-  statusText.textContent = 'Connecting...';
-
-  try {
-    const response = await axios.get(`${API_BASE_URL}/api/health`, {
-      timeout: 3000,
-      headers: {
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache'
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('reelsForm');
+    const successContainer = document.getElementById('successContainer');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const registrationIdDisplay = document.getElementById('registrationIdDisplay');
+    const newRegistrationBtn = document.getElementById('newRegistrationBtn');
+    const statusIndicator = document.getElementById('statusIndicator');
+    const statusText = document.getElementById('statusText');
+    const toastContainer = document.getElementById('toastContainer');
+    
+    // Initial status
+    statusIndicator.className = 'status-indicator status-disconnected';
+    statusText.textContent = 'Connecting...';
+    
+    // Check backend connection immediately
+    checkConnection();
+    
+    // New registration button
+    newRegistrationBtn.addEventListener('click', function() {
+      successContainer.style.display = 'none';
+      form.style.display = 'block';
+      form.reset();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      // Validate form
+      if (validateForm()) {
+        // Get form data
+        const formData = {
+          name: document.getElementById('name').value,
+          program: document.getElementById('program').value,
+          email: document.getElementById('email').value,
+          contact: document.getElementById('contact').value,
+          semester: document.getElementById('semester').value,
+          reelLink: document.getElementById('reelLink').value
+        };
+        
+        // Show loading overlay
+        loadingOverlay.style.display = 'flex';
+        
+        try {
+          // Submit to backend
+          const response = await axios.post(`${API_BASE_URL}/api/registrations`, formData);
+          
+          if (response.data.success) {
+            handleSuccess(response.data);
+          } else {
+            handleError(response.data);
+          }
+        } catch (error) {
+          handleError(error.response?.data || { 
+            message: error.message || 'Failed to connect to backend' 
+          });
+        }
+      } else {
+        showToast('Please fill in all required fields correctly.', 'error');
       }
     });
-
-    if (response.data.status === 'operational') {
-      statusIndicator.className = 'status-indicator status-connected';
-      statusText.textContent = 'Connected';
-    } else {
-      statusIndicator.className = 'status-indicator status-warning';
-      statusText.textContent = 'Service degraded';
-    }
-  } catch (error) {
-    console.error('Connection check failed:', error);
-    statusIndicator.className = 'status-indicator status-disconnected';
     
-    if (error.response) {
-      // Server responded with error status
-      statusText.textContent = `Backend error: ${error.response.status}`;
-    } else if (error.request) {
-      // No response received
-      statusText.textContent = 'No response from server';
-    } else {
-      // Other errors
-      statusText.textContent = 'Connection failed';
+    function handleSuccess(response) {
+      // Hide loading overlay
+      loadingOverlay.style.display = 'none';
+      
+      // Update registration ID display
+      registrationIdDisplay.textContent = response.registrationId;
+      
+      // Show success message
+      form.style.display = 'none';
+      successContainer.style.display = 'block';
+      
+      // Scroll to success message
+      successContainer.scrollIntoView({ behavior: 'smooth' });
+      
+      // Show success toast
+      showToast('Registration submitted successfully!', 'success');
     }
-  }
-}
-// Check connection on load and every 30 seconds
-document.addEventListener('DOMContentLoaded', () => {
-  checkConnection();
-  setInterval(checkConnection, 30000);
-});
-    </script>
+    
+    function handleError(error) {
+      // Hide loading overlay
+      loadingOverlay.style.display = 'none';
+      
+      // Show error message
+      const errorMsg = error.message || 
+                      error.error?.message || 
+                      'An unknown error occurred';
+      
+      showToast(`Error: ${errorMsg}`, 'error');
+    }
+    
+    function validateForm() {
+      let isValid = true;
+      const inputs = form.querySelectorAll('input, select');
+      
+      // Reset errors
+      document.querySelectorAll('.error-message').forEach(el => {
+        el.style.display = 'none';
+      });
+      inputs.forEach(input => input.classList.remove('error'));
+      
+      // Check each input
+      inputs.forEach(input => {
+        if (input.hasAttribute('required') && !input.value.trim()) {
+          isValid = false;
+          input.classList.add('error');
+          const errorId = input.id + 'Error';
+          const errorEl = document.getElementById(errorId);
+          if (errorEl) errorEl.style.display = 'block';
+        }
+        
+        // Special validation for email
+        if (input.type === 'email' && input.value.trim()) {
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(input.value)) {
+            isValid = false;
+            input.classList.add('error');
+            document.getElementById('emailError').style.display = 'block';
+          }
+        }
+        
+        // Special validation for contact number
+        if (input.id === 'contact' && input.value.trim()) {
+          const phoneRegex = /^[0-9]{10}$/;
+          if (!phoneRegex.test(input.value)) {
+            isValid = false;
+            input.classList.add('error');
+            document.getElementById('contactError').style.display = 'block';
+          }
+        }
+        
+        // Special validation for reel link
+        if (input.id === 'reelLink' && input.value.trim()) {
+          const instaRegex = /https?:\/\/(www\.)?instagram\.com\/reel\/.+/i;
+          if (!instaRegex.test(input.value)) {
+            isValid = false;
+            input.classList.add('error');
+            document.getElementById('reelLinkError').style.display = 'block';
+          }
+        }
+      });
+      
+      return isValid;
+    }
+    
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      toast.className = `cyber-toast ${type}`;
+      toast.innerHTML = `
+        <div class="toast-content">
+          <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+          <span>${message}</span>
+        </div>
+      `;
+      
+      toastContainer.appendChild(toast);
+      
+      // Show toast
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 10);
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          toast.remove();
+        }, 300);
+      }, 5000);
+    }
+    
+    async function checkConnection() {
+      // Immediate visual feedback
+      statusIndicator.className = 'status-indicator status-disconnected';
+      statusText.textContent = 'Connecting...';
+    
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/health`, {
+          timeout: 3000
+        });
+    
+        if (response.data.status === 'operational') {
+          statusIndicator.className = 'status-indicator status-connected';
+          statusText.textContent = 'Connected';
+        } else {
+          statusIndicator.className = 'status-indicator status-disconnected';
+          statusText.textContent = 'Service degraded';
+        }
+      } catch (error) {
+        console.error('Connection check failed:', error);
+        statusIndicator.className = 'status-indicator status-disconnected';
+        
+        if (error.response) {
+          statusText.textContent = `Error: ${error.response.status}`;
+        } else if (error.request) {
+          statusText.textContent = 'No response from server';
+        } else {
+          statusText.textContent = 'Connection failed';
+        }
+      }
+    }
+    
+    // Check connection periodically
+    setInterval(checkConnection, 30000);
+  });
+</script>
 </body>
 </html>
