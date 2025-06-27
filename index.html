@@ -1115,20 +1115,35 @@
             }
             
 function checkConnection() {
-  axios.get(`${API_BASE_URL}/api/health`)
+  const statusIndicator = document.getElementById('statusIndicator');
+  const statusText = document.getElementById('statusText');
+  
+  // Show connecting state immediately
+  statusIndicator.className = 'status-indicator status-disconnected';
+  statusText.textContent = 'Checking connection...';
+
+  axios.get(`${API_BASE_URL}/api/health`, { timeout: 5000 })
     .then(response => {
       if (response.data.status === 'connected') {
         statusIndicator.className = 'status-indicator status-connected';
-        statusText.textContent = 'Backend Connected';
+        statusText.textContent = 'Connected to backend';
       } else {
-        statusIndicator.className = 'status-indicator status-disconnected';
-        statusText.textContent = 'Backend Disconnected';
+        statusIndicator.className = 'status-indicator status-warning';
+        statusText.textContent = 'Backend OK, database disconnected';
       }
     })
     .catch(error => {
       console.error('Connection check failed:', error);
       statusIndicator.className = 'status-indicator status-disconnected';
-      statusText.textContent = 'Backend Unavailable';
+      
+      if (error.code === 'ECONNABORTED') {
+        statusText.textContent = 'Backend timeout';
+      } else if (error.response) {
+        // Server responded with non-2xx status
+        statusText.textContent = `Backend error: ${error.response.status}`;
+      } else {
+        statusText.textContent = 'Backend unavailable';
+      }
     });
 }
 
@@ -1137,7 +1152,6 @@ document.addEventListener('DOMContentLoaded', () => {
   checkConnection();
   setInterval(checkConnection, 30000);
 });
-        });
     </script>
 </body>
 </html>
