@@ -1,18 +1,29 @@
 {
   "functions": {
-    "api/registrations.js": {
+    "api/*.js": {
       "maxDuration": 30
     }
   },
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1",
-      "methods": ["GET", "POST"]
+      "src": "/api/health",
+      "dest": "/api/health.js"
+    },
+    {
+      "src": "/api/registrations",
+      "dest": "/api/registrations.js"
+    },
+    {
+      "src": "/api/sync",
+      "dest": "/api/sync.js"
     },
     {
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ]
+  ],
+  "env": {
+    "MONGODB_URI": "@mongodb_uri",
+    "SHEET_SYNC_KEY": "@sheet_sync_key"
+  }
 }
