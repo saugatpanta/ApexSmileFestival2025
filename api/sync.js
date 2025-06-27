@@ -3,7 +3,6 @@ import { MongoClient } from 'mongodb';
 const uri = process.env.MONGODB_URI;
 let cachedDb = null;
 
-// Critical environment check
 console.log('ℹ️ Environment check:', {
   node_env: process.env.NODE_ENV,
   vercel_env: process.env.VERCEL_ENV,
@@ -40,7 +39,9 @@ export default async function handler(req, res) {
     query: req.query,
     headers: {
       'user-agent': req.headers['user-agent'],
-      'x-forwarded-for': req.headers['x-forwarded-for']
+      'x-forwarded-for': req.headers['x-forwarded-for'],
+      'x-api-key': req.headers['x-api-key'],
+      'x-apex-key': req.headers['x-apex-key']
     }
   });
 
@@ -48,7 +49,6 @@ export default async function handler(req, res) {
   const apiKeySources = {
     queryParam: req.query.key,
     xApiKeyHeader: req.headers['x-api-key'],
-    authHeader: req.headers['authorization']?.split(' ')[1],
     apexKeyHeader: req.headers['x-apex-key']
   };
   
@@ -56,7 +56,6 @@ export default async function handler(req, res) {
 
   const apiKey = apiKeySources.queryParam || 
                  apiKeySources.xApiKeyHeader || 
-                 apiKeySources.authHeader || 
                  apiKeySources.apexKeyHeader;
 
   // Mask keys for security
@@ -105,24 +104,12 @@ export default async function handler(req, res) {
     const errorMsg = `❌ API key mismatch: Received ${maskedReceived}, Expected ${maskedExpected}`;
     console.error(errorMsg);
     
-    // Character-by-character comparison
-    const vercelKey = process.env.SHEET_SYNC_KEY || '';
-    let mismatchPosition = -1;
-    for (let i = 0; i < Math.max(apiKey.length, vercelKey.length); i++) {
-      if (apiKey[i] !== vercelKey[i]) {
-        mismatchPosition = i;
-        break;
-      }
-    }
-    
     return res.status(401).json({ 
       success: false, 
       message: 'Invalid API key',
       receivedKey: maskedReceived,
       expectedKey: maskedExpected,
-      mismatchPosition,
-      help: 'Verify key matches in Vercel and Apps Script',
-      keySources: apiKeySources
+      help: 'Verify key matches in Vercel and Apps Script'
     });
   }
 
