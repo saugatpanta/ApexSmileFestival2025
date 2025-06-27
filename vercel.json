@@ -11,15 +11,20 @@
     },
     {
       "src": "/api/registrations",
-      "dest": "/api/registrations.js"
+      "dest": "/api/registrations.js",
+      "methods": ["GET", "POST"]
     },
     {
       "src": "/api/sync",
       "dest": "/api/sync.js"
     },
     {
+      "src": "/",
+      "dest": "/public/index.html"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/public/index.html"
     }
   ],
   "env": {
