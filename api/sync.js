@@ -3,6 +3,7 @@ import { MongoClient } from 'mongodb';
 const uri = process.env.MONGODB_URI;
 let cachedDb = null;
 
+// Log environment status on startup
 console.log('ℹ️ Environment check:', {
   node_env: process.env.NODE_ENV,
   vercel_env: process.env.VERCEL_ENV,
@@ -34,21 +35,21 @@ async function connectToDatabase() {
 
 export default async function handler(req, res) {
   // Log raw headers for debugging
-  console.log('🔍 Raw Headers Received:', req.headers);
+  console.log('🔍 Raw Headers Received:', JSON.stringify(req.headers, null, 2));
   
-  // Extract all potential key sources
-  const potentialKeys = {
-    queryParam: req.query.key,
-    xApiKeyHeader: req.headers['x-api-key'],
-    apexKeyHeader: req.headers['x-apex-key'],
-    authorizationHeader: req.headers['authorization']?.split(' ')[1],
-    lowercaseHeader: req.headers['x-api-key'] || req.headers['x_apex_key'] // Vercel sometimes lowercases headers
+  // Extract keys using case-insensitive approach
+  const getHeader = (name) => {
+    const lowerName = name.toLowerCase();
+    for (const [key, value] of Object.entries(req.headers)) {
+      if (key.toLowerCase() === lowerName) return value;
+    }
+    return null;
   };
-  
-  console.log('🔑 All Potential Key Sources:', JSON.stringify(potentialKeys, null, 2));
-  
-  // Find the first non-empty key
-  const apiKey = Object.values(potentialKeys).find(val => val && val.trim() !== '');
+
+  const apiKey = 
+    req.query.key || 
+    getHeader('x-api-key') || 
+    getHeader('x-apex-key');
 
   // Log environment key details
   const envKey = process.env.SHEET_SYNC_KEY || '';
@@ -56,7 +57,7 @@ export default async function handler(req, res) {
     exists: !!envKey,
     length: envKey.length,
     masked: envKey ? `${envKey.substring(0, 4)}...${envKey.substring(envKey.length - 4)}` : 'none',
-    value: envKey // CAUTION: Only for debugging, remove in production
+    value: envKey // CAUTION: Only for debugging
   });
 
   // Case 1: Environment key not set
@@ -75,7 +76,7 @@ export default async function handler(req, res) {
     const errorMsg = '❌ API key not found in request headers or query parameters';
     console.error(errorMsg, {
       headersReceived: Object.keys(req.headers),
-      queryParams: Object.keys(req.query)
+      queryParams: req.query
     });
     
     return res.status(401).json({ 
@@ -87,15 +88,20 @@ export default async function handler(req, res) {
 
   // Case 3: Key mismatch
   if (apiKey !== envKey) {
+    // Find mismatch position
+    let mismatchPosition = -1;
+    for (let i = 0; i < Math.max(apiKey.length, envKey.length); i++) {
+      if (apiKey[i] !== envKey[i]) {
+        mismatchPosition = i;
+        break;
+      }
+    }
+    
     console.error('❌ Key mismatch', {
       received: apiKey,
       expected: envKey,
       lengthMatch: apiKey.length === envKey.length,
-      characterDiff: {
-        position: findFirstMismatch(apiKey, envKey),
-        receivedChar: findFirstMismatch(apiKey, envKey) >= 0 ? apiKey.charCodeAt(findFirstMismatch(apiKey, envKey)) : 'N/A',
-        expectedChar: findFirstMismatch(apiKey, envKey) >= 0 ? envKey.charCodeAt(findFirstMismatch(apiKey, envKey)) : 'N/A'
-      }
+      mismatchPosition
     });
     
     return res.status(401).json({ 
@@ -105,7 +111,7 @@ export default async function handler(req, res) {
       keyComparison: {
         receivedLength: apiKey.length,
         expectedLength: envKey.length,
-        firstMismatchPosition: findFirstMismatch(apiKey, envKey)
+        firstMismatchPosition: mismatchPosition
       }
     });
   }
@@ -134,12 +140,4 @@ export default async function handler(req, res) {
       message: 'Server error: ' + error.message
     });
   }
-}
-
-// Helper function to find first mismatch position
-function findFirstMismatch(a, b) {
-  for (let i = 0; i < Math.max(a.length, b.length); i++) {
-    if (a[i] !== b[i]) return i;
-  }
-  return -1;
 }
