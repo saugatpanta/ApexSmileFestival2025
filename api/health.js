@@ -1,34 +1,26 @@
-// pages/api/health.js
-import { MongoClient } from 'mongodb';
+const connectDB = require('../utils/db');
+const mongoose = require('mongoose');
 
-export default async function handler(req, res) {
-  // Enable CORS
+module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET');
   
   try {
-    // Test MongoDB connection
-    const uri = process.env.MONGODB_URI;
-    const client = new MongoClient(uri);
+    await connectDB();
+    const isConnected = mongoose.connection.readyState === 1;
     
-    await client.connect();
-    const db = client.db(process.env.MONGODB_DB);
-    await db.command({ ping: 1 });
-    await client.close();
-
-    return res.status(200).json({
-      status: 'operational',
+    res.status(200).json({
+      status: isConnected ? 'operational' : 'degraded',
       timestamp: new Date().toISOString(),
       version: '2.0.0',
       system: 'Apex Smile Festival Backend',
-      database: 'connected'
+      database: isConnected ? 'connected' : 'disconnected'
     });
   } catch (error) {
-    return res.status(500).json({
-      status: 'degraded',
-      message: 'Database connection failed',
-      error: error.message,
-      system: 'Apex Smile Festival Backend'
+    res.status(500).json({
+      status: 'error',
+      message: 'Health check failed',
+      error: error.message
     });
   }
-}
+};
