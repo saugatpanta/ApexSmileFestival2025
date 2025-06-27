@@ -1,5 +1,4 @@
 import { MongoClient } from 'mongodb';
-import { healthCheck } from './registrations';
 
 const uri = process.env.MONGODB_URI;
 let cachedDb = null;
@@ -19,8 +18,13 @@ async function connectToDatabase() {
 
 export default async function handler(req, res) {
   // Verify API key
-  if (req.query.key !== process.env.SHEET_SYNC_KEY) {
-    return res.status(401).json({ success: false, message: 'Unauthorized' });
+  const apiKey = req.query.key;
+  if (apiKey !== process.env.SHEET_SYNC_KEY) {
+    console.warn(`⚠️ Unauthorized access attempt from ${req.headers['x-forwarded-for']}`);
+    return res.status(401).json({ 
+      success: false, 
+      message: 'Invalid API key' 
+    });
   }
 
   try {
