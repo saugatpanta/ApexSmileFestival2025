@@ -1,7 +1,6 @@
-// pages/api/sync.js
-import { MongoClient } from 'mongodb';
+const { MongoClient } = require('mongodb');
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   // Validate API key
   const apiKey = req.query.key;
   const validKey = process.env.SHEET_SYNC_KEY;
@@ -15,47 +14,40 @@ export default async function handler(req, res) {
     });
   }
 
-  // MongoDB Connection Setup
-  const uri = process.env.MONGODB_URI;
-  const client = new MongoClient(uri);
+  const client = new MongoClient(process.env.MONGODB_URI);
   
   try {
     await client.connect();
-    console.log("Connected to MongoDB");
-    
     const db = client.db(process.env.MONGODB_DB);
-    const registrations = db.collection('registrations');
+    const collection = db.collection('registrations');
     
-    // Fetch registrations with projection
-    const data = await registrations.find(
-      {},
-      { 
-        projection: { 
-          _id: 0,
-          registrationId: 1,
-          fullName: 1,
-          email: 1,
-          contact: 1,
-          program: 1,
-          semester: 1,
-          reelLink: 1,
-          status: 1,
-          createdAt: 1
-        }
+    // Get all registrations
+    const data = await collection.find({}, {
+      projection: {
+        _id: 0,
+        registrationId: 1,
+        name: 1,
+        email: 1,
+        contact: 1,
+        program: 1,
+        semester: 1,
+        reelLink: 1,
+        status: 1,
+        createdAt: 1
       }
-    ).sort({ createdAt: -1 }).toArray();
+    }).sort({ createdAt: -1 }).toArray();
 
-    // Format createdAt dates
-    const formattedData = data.map(reg => ({
-      ...reg,
-      createdAt: new Date(reg.createdAt).toISOString()
+    // Format dates
+    const formattedData = data.map(item => ({
+      ...item,
+      createdAt: item.createdAt.toISOString()
     }));
 
     res.status(200).json({
       success: true,
       data: formattedData,
-      timestamp: new Date().toISOString(),
-      count: formattedData.length
+      count: formattedData.length,
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('MongoDB error:', error);
@@ -67,4 +59,4 @@ export default async function handler(req, res) {
   } finally {
     await client.close();
   }
-}
+};
