@@ -1,25 +1,26 @@
 const mongoose = require('mongoose');
 
 module.exports = async (req, res) => {
-  try {
-    // Check MongoDB connection
-    const isConnected = mongoose.connection.readyState === 1;
-    
-    if (isConnected) {
-      res.status(200).json({ 
-        status: 'connected',
-        message: 'Backend is connected to MongoDB'
+  // Check connection status
+  const isConnected = mongoose.connection.readyState === 1;
+  
+  if (!isConnected) {
+    try {
+      await mongoose.connect(process.env.MONGODB_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
       });
-    } else {
-      res.status(500).json({ 
+    } catch (err) {
+      return res.status(500).json({
         status: 'disconnected',
-        message: 'Backend is not connected to MongoDB'
+        message: 'Failed to connect to MongoDB',
+        error: err.message
       });
     }
-  } catch (error) {
-    res.status(500).json({ 
-      status: 'error',
-      message: 'Error checking connection status'
-    });
   }
+
+  res.status(200).json({ 
+    status: 'connected',
+    message: 'Backend is connected to MongoDB'
+  });
 };
