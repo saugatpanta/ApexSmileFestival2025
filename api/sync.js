@@ -3,9 +3,11 @@ import { MongoClient } from 'mongodb';
 const uri = process.env.MONGODB_URI;
 let cachedDb = null;
 
-// Verify environment variable is set
+// Critical environment check
 if (!process.env.SHEET_SYNC_KEY) {
   console.error('❌ CRITICAL ERROR: SHEET_SYNC_KEY environment variable is not set!');
+} else {
+  console.log('ℹ️ SHEET_SYNC_KEY is set');
 }
 
 async function connectToDatabase() {
@@ -42,38 +44,39 @@ export default async function handler(req, res) {
     req.headers['x-api-key'] || 
     req.headers['authorization']?.split(' ')[1];
   
-  // Log request details
-  console.log('🔒 Sync request received', {
-    method: req.method,
-    path: req.url,
-    query: req.query,
-    headers: {
-      'user-agent': req.headers['user-agent'],
-      'x-forwarded-for': req.headers['x-forwarded-for']
-    },
-    receivedKey: apiKey ? `${apiKey.substring(0, 4)}...${apiKey.substring(apiKey.length - 4)}` : 'none'
-  });
+  // Mask keys for security
+  const maskKey = (key) => {
+    if (!key) return 'none';
+    if (key.length < 8) return 'invalid';
+    return `${key.substring(0, 4)}...${key.substring(key.length - 4)}`;
+  };
+  
+  const maskedReceived = maskKey(apiKey);
+  const maskedExpected = maskKey(process.env.SHEET_SYNC_KEY);
+  
+  console.log(`🔑 Received Key: ${maskedReceived}`);
+  console.log(`🔑 Expected Key: ${maskedExpected}`);
 
   // Validate API key
   if (!process.env.SHEET_SYNC_KEY) {
-    console.error('❌ Server misconfigured: SHEET_SYNC_KEY not set');
+    const errorMsg = '❌ Server misconfigured: SHEET_SYNC_KEY not set';
+    console.error(errorMsg);
     return res.status(500).json({ 
       success: false, 
-      message: 'Server configuration error' 
+      message: 'Server configuration error',
+      details: errorMsg
     });
   }
 
   if (!apiKey || apiKey !== process.env.SHEET_SYNC_KEY) {
-    console.error('❌ Invalid API key', {
-      received: apiKey ? `${apiKey.substring(0, 4)}...${apiKey.substring(apiKey.length - 4)}` : 'none',
-      expected: `${process.env.SHEET_SYNC_KEY.substring(0, 4)}...${process.env.SHEET_SYNC_KEY.substring(process.env.SHEET_SYNC_KEY.length - 4)}`
-    });
+    const errorMsg = `❌ Invalid API key: Received ${maskedReceived}, Expected ${maskedExpected}`;
+    console.error(errorMsg);
     
     return res.status(401).json({ 
       success: false, 
       message: 'Invalid API key',
-      receivedKey: apiKey ? `${apiKey.substring(0, 4)}...` : 'none',
-      expectedKey: `${process.env.SHEET_SYNC_KEY.substring(0, 4)}...`,
+      receivedKey: maskedReceived,
+      expectedKey: maskedExpected,
       help: 'Verify SHEET_SYNC_KEY matches in Vercel and Apps Script'
     });
   }
@@ -99,7 +102,8 @@ export default async function handler(req, res) {
     console.error('❌ Database error:', error.message);
     return res.status(500).json({
       success: false,
-      message: 'Server error: ' + error.message
+      message: 'Server error: ' + error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 }
