@@ -6,6 +6,10 @@
       "use": "@vercel/node"
     },
     {
+      "src": "api/registrations.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "api/sync.js",
       "use": "@vercel/node"
     },
@@ -16,8 +20,19 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "api/$1.js"
+      "src": "/api/health",
+      "dest": "/api/health.js",
+      "methods": ["GET"]
+    },
+    {
+      "src": "/api/registrations",
+      "dest": "/api/registrations.js",
+      "methods": ["POST"]
+    },
+    {
+      "src": "/api/sync",
+      "dest": "/api/sync.js",
+      "methods": ["GET"]
     },
     {
       "src": "/(.*)",
