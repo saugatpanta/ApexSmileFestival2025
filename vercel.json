@@ -14,11 +14,18 @@
       "use": "@vercel/static"
     }
   ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/$1.js"
+    },
     {
       "src": "/(.*)",
       "dest": "index.html",
       "headers": {
-        "Content-Type": "text/html"
+        "Content-Type": "text/html",
+        "Cache-Control": "public, max-age=3600"
       }
     }
+  ]
 }
