@@ -4,119 +4,110 @@ const uri = process.env.MONGODB_URI;
 let cachedDb = null;
 
 async function connectToDatabase() {
-  if (cachedDb) {
-    return cachedDb;
-  }
-  
-  console.log("Connecting to MongoDB...");
+  if (cachedDb) return cachedDb;
   
   const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     maxPoolSize: 10,
-    serverSelectionTimeoutMS: 10000,
+    serverSelectionTimeoutMS: 5000,
   });
   
   try {
     await client.connect();
-    console.log("Connected to MongoDB server");
-    
-    // Explicitly select database
     const db = client.db('apex_reels');
-    
-    // Verify permissions by listing collections
-    const collections = await db.listCollections().toArray();
-    console.log("Available collections:", collections.map(c => c.name));
-    
+    console.log("✅ MongoDB connected");
     cachedDb = db;
     return db;
   } catch (error) {
-    console.error("MongoDB connection error:", error);
+    console.error("❌ MongoDB connection error:", error);
     throw error;
   }
 }
 
-export default async function handler(req, res) {
-  console.log("Registration request received");
-  
-  if (req.method !== 'POST') {
-    return res.status(405).json({ 
-      success: false, 
-      message: 'Method not allowed' 
-    });
-  }
-
+// Health check endpoint
+export async function healthCheck() {
   try {
     const db = await connectToDatabase();
-    console.log("Database connected");
-    
-    // Access the registrations collection
-    const registrations = db.collection('registrations');
-    console.log("Registrations collection accessed");
-
-    const { name, email, contact, program, semester, reelLink } = req.body;
-    console.log("Request data:", { name, email, contact, program, semester, reelLink });
-
-    // Validate input
-    if (!name || !email || !contact || !program || !semester || !reelLink) {
-      return res.status(400).json({
-        success: false,
-        message: 'All fields are required'
-      });
-    }
-
-    // Check for existing email
-    const existingEmail = await registrations.findOne({ email });
-    if (existingEmail) {
-      return res.status(400).json({
-        success: false,
-        message: 'This email is already registered'
-      });
-    }
-
-    // Check for existing contact
-    const existingContact = await registrations.findOne({ contact });
-    if (existingContact) {
-      return res.status(400).json({
-        success: false,
-        message: 'This phone number is already registered'
-      });
-    }
-
-    // Generate registration ID
-    const registrationId = generateRegistrationId();
-    console.log("Generated registration ID:", registrationId);
-
-    // Create new registration
-    const newRegistration = {
-      registrationId,
-      fullName: name,
-      email,
-      contact,
-      program,
-      semester,
-      reelLink,
-      status: 'Submitted',
-      createdAt: new Date()
-    };
-
-    // Insert into database
-    const result = await registrations.insertOne(newRegistration);
-    console.log("Registration inserted with ID:", result.insertedId);
-
-    res.status(201).json({
-      success: true,
-      registrationId,
-      timestamp: newRegistration.createdAt
-    });
-
+    await db.command({ ping: 1 });
+    return { status: 'connected', dbStatus: 'healthy' };
   } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error during registration: ' + error.message
-    });
+    return { status: 'disconnected', error: error.message };
   }
+}
+
+export default async function handler(req, res) {
+  // Health check endpoint
+  if (req.method === 'GET' && req.query.health) {
+    try {
+      const health = await healthCheck();
+      return res.status(200).json(health);
+    } catch (error) {
+      return res.status(500).json({ status: 'down', error: error.message });
+    }
+  }
+
+  // Registration endpoint
+  if (req.method === 'POST') {
+    console.log("📝 Registration request received");
+    
+    try {
+      const db = await connectToDatabase();
+      const registrations = db.collection('registrations');
+
+      const { name, email, contact, program, semester, reelLink } = req.body;
+      
+      // Validate input
+      if (!name || !email || !contact || !program || !semester || !reelLink) {
+        return res.status(400).json({
+          success: false,
+          message: 'All fields are required'
+        });
+      }
+
+      // Check for duplicates
+      const existing = await registrations.findOne({ 
+        $or: [{ email }, { contact }] 
+      });
+      
+      if (existing) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email or phone number already registered'
+        });
+      }
+
+      // Create new registration
+      const registrationId = generateRegistrationId();
+      const result = await registrations.insertOne({
+        registrationId,
+        fullName: name,
+        email,
+        contact,
+        program,
+        semester,
+        reelLink,
+        status: 'Submitted',
+        createdAt: new Date()
+      });
+
+      console.log(`✅ Registration successful: ${registrationId}`);
+      return res.status(201).json({
+        success: true,
+        registrationId,
+        timestamp: new Date()
+      });
+
+    } catch (error) {
+      console.error('❌ Registration error:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Server error: ' + error.message
+      });
+    }
+  }
+
+  return res.status(405).json({ success: false, message: 'Method not allowed' });
 }
 
 function generateRegistrationId() {
