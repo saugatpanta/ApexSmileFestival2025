@@ -2,7 +2,11 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/*.js",
+      "src": "api/health.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/sync.js",
       "use": "@vercel/node"
     },
     {
@@ -13,15 +17,18 @@
   "routes": [
     {
       "src": "/api/health",
-      "dest": "api/health"
+      "dest": "/api/health"
     },
     {
       "src": "/api/sync",
-      "dest": "api/sync"
+      "dest": "/api/sync"
     },
     {
       "src": "/(.*)",
-      "dest": "index.html"
+      "dest": "index.html",
+      "headers": {
+        "Content-Type": "text/html"
+      }
     }
   ]
 }
