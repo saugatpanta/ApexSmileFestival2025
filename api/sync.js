@@ -15,6 +15,7 @@ async function connectToDatabase() {
   try {
     await client.connect();
     cachedDb = client.db('apex_reels');
+    console.log('✅ MongoDB connected');
     return cachedDb;
   } catch (error) {
     console.error('❌ MongoDB connection error:', error.message);
@@ -26,8 +27,11 @@ export default async function handler(req, res) {
   // Log request details for debugging
   console.log('🔒 Sync request received', {
     method: req.method,
-    headers: req.headers,
-    query: req.query
+    query: req.query,
+    headers: {
+      'user-agent': req.headers['user-agent'],
+      'x-forwarded-for': req.headers['x-forwarded-for']
+    }
   });
 
   // Verify API key from multiple sources
@@ -36,10 +40,13 @@ export default async function handler(req, res) {
     req.headers['x-api-key'] || 
     req.headers['authorization']?.split(' ')[1];
   
-  // Log key details (masked)
-  const maskedKey = apiKey ? `${apiKey.substring(0, 4)}...${apiKey.substring(apiKey.length - 4)}` : 'none';
-  console.log(`🔑 API Key Received: ${maskedKey}`);
-  console.log(`🔑 Expected Key: ${process.env.SHEET_SYNC_KEY.substring(0, 4)}...${process.env.SHEET_SYNC_KEY.substring(process.env.SHEET_SYNC_KEY.length - 4)}`);
+  // Mask keys for security
+  const maskKey = (key) => key ? `${key.substring(0, 4)}...${key.substring(key.length - 4)}` : 'none';
+  const maskedReceived = maskKey(apiKey);
+  const maskedExpected = maskKey(process.env.SHEET_SYNC_KEY);
+  
+  console.log(`🔑 Received Key: ${maskedReceived}`);
+  console.log(`🔑 Expected Key: ${maskedExpected}`);
 
   // Validate API key
   if (!apiKey || apiKey !== process.env.SHEET_SYNC_KEY) {
@@ -47,8 +54,8 @@ export default async function handler(req, res) {
     return res.status(401).json({ 
       success: false, 
       message: 'Invalid API key',
-      receivedKey: maskedKey,
-      expectedKey: `${process.env.SHEET_SYNC_KEY.substring(0, 4)}...${process.env.SHEET_SYNC_KEY.substring(process.env.SHEET_SYNC_KEY.length - 4)}`
+      receivedKey: maskedReceived,
+      expectedKey: maskedExpected
     });
   }
 
