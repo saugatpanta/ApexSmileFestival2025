@@ -5,23 +5,19 @@ module.exports = async (req, res) => {
   const apiKey = req.query.key;
   const validKey = process.env.SHEET_SYNC_KEY;
   
-  // Debugging logs (remove after fix)
-  console.log('Received API Key:', apiKey ? `${apiKey.substring(0, 5)}...${apiKey.slice(-5)}` : 'Missing');
-  console.log('Expected API Key:', validKey ? `${validKey.substring(0, 5)}...${validKey.slice(-5)}` : 'Missing');
-  
   if (!apiKey || apiKey !== validKey) {
     return res.status(401).json({
       error: 'Unauthorized',
       message: 'Invalid or missing API key',
       expectedLength: validKey?.length || 0,
-      receivedLength: apiKey?.length || 0,
-      hint: 'Verify SHEET_SYNC_KEY environment variable matches Apps Script key'
+      receivedLength: apiKey?.length || 0
     });
   }
 
   try {
-    const { db } = await getMongoClient();
-    const collection = db.collection('registrations');
+    // Get client and database properly
+    const { client, db } = await getMongoClient();
+    const collection = db.collection('registrations'); // FIXED: Added proper collection access
     
     // Get all registrations
     const data = await collection.find({}, {
@@ -45,7 +41,7 @@ module.exports = async (req, res) => {
       createdAt: item.createdAt.toISOString()
     }));
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       data: formattedData,
       count: formattedData.length,
@@ -53,7 +49,7 @@ module.exports = async (req, res) => {
     });
   } catch (error) {
     console.error('MongoDB error:', error);
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       error: 'Database operation failed',
       details: error.message
