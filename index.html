@@ -1081,17 +1081,17 @@
       }
       
       // Fixed Instagram profile link validation
-      if (input.id === 'profileLink' && input.value.trim()) {
-        // Updated regex pattern
-        const instaRegex = /https?:\/\/(?:www\.)?instagram\.com\/([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|(?:\.(?!\.))){0,28}(?:[A-Za-z0-9_]))?\/?/i;
-        if (!instaRegex.test(input.value)) {
-          isValid = false;
-          input.classList.add('error');
-          document.getElementById('profileLinkError').innerText = 'Invalid format. Must be: https://www.instagram.com/username/';
-          document.getElementById('profileLinkError').style.display = 'block';
-        }
-      }
-    });
+        if (input.id === 'profileLink' && input.value.trim()) {
+    // Fixed regex pattern - simplified and corrected
+    const instaRegex = /^https?:\/\/(?:www\.)?instagram\.com\/[A-Za-z0-9_.]+\/?$/i;
+    if (!instaRegex.test(input.value)) {
+      isValid = false;
+      input.classList.add('error');
+      document.getElementById('profileLinkError').innerText = 
+        'Invalid format. Must be: https://www.instagram.com/username/';
+      document.getElementById('profileLinkError').style.display = 'block';
+    }
+  }
     
     return isValid;
   }
