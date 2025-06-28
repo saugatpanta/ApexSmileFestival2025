@@ -44,13 +44,13 @@ const registrationSchema = new mongoose.Schema({
     required: [true, 'Semester is required'],
     trim: true
   },
-  profileLink: {  // Fixed field name consistency
+    profileLink: {
     type: String,
     required: [true, 'Instagram profile link is required'],
     validate: {
-      // Fixed regex pattern
-      validator: (v) => /https?:\/\/(?:www\.)?instagram\.com\/([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|(?:\.(?!\.))){0,28}(?:[A-Za-z0-9_]))?\/?/i.test(v),
-      message: props => 'Invalid Instagram profile URL! Must be in format: https://www.instagram.com/username/'
+      // Fixed regex pattern - simplified and corrected
+      validator: (v) => /^https?:\/\/(?:www\.)?instagram\.com\/[A-Za-z0-9_.]+\/?$/i.test(v),
+      message: 'Invalid Instagram profile URL! Must be in format: https://www.instagram.com/username/'
     }
   },
   status: {
