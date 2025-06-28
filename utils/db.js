@@ -1,8 +1,8 @@
+// utils/db.js
 const mongoose = require('mongoose');
 const { MongoClient } = require('mongodb');
 
-let cachedClient = null;
-let cachedDb = null;
+let client = null;
 
 // Mongoose connection for ODM
 const connectDB = async () => {
@@ -23,24 +23,19 @@ const connectDB = async () => {
 
 // MongoDB native client for change streams
 const getMongoClient = async () => {
-  if (cachedClient && cachedClient.isConnected()) {
-    return { client: cachedClient, db: cachedDb };
+  if (client && client.isConnected()) {
+    return client;
   }
   
-  const client = new MongoClient(process.env.MONGODB_URI, {
+  client = new MongoClient(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   });
   
   try {
     await client.connect();
-    const db = client.db(process.env.MONGODB_DB);
-    
-    cachedClient = client;
-    cachedDb = db;
-    
     console.log('MongoDB native client connected');
-    return { client, db };
+    return client;
   } catch (error) {
     console.error('MongoDB native connection error:', error);
     throw error;
