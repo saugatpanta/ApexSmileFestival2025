@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { getMongoClient } = require('../utils/db');
 
 module.exports = async (req, res) => {
   // Validate API key
@@ -14,11 +14,9 @@ module.exports = async (req, res) => {
     });
   }
 
-  const client = new MongoClient(process.env.MONGODB_URI);
+  const { db } = await getMongoClient();
   
   try {
-    await client.connect();
-    const db = client.db(process.env.MONGODB_DB);
     const collection = db.collection('registrations');
     
     // Get all registrations
@@ -56,7 +54,5 @@ module.exports = async (req, res) => {
       error: 'Database operation failed',
       details: error.message
     });
-  } finally {
-    await client.close();
   }
 };
