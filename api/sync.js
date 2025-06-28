@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
         contact: 1,
         program: 1,
         semester: 1,
-        reelLink: 1,
+        profileLink: 1,
         status: 1,
         createdAt: 1
       }
