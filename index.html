@@ -886,9 +886,9 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="reelLink">Instagram Reel Link <span class="required">*</span></label>
-                    <input type="url" id="reelLink" name="reelLink" required placeholder="https://www.instagram.com/reel/...">
-                    <div class="error-message" id="reelLinkError">Please enter a valid Instagram reel URL</div>
+                    <label for="profileLink">Instagram Profile Link <span class="required">*</span></label>
+                    <input type="url" id="profileLink" name="profileLink" required placeholder="https://www.instagram.com/profile-name/...">
+                    <div class="error-message" id="profileLinkError">Please enter a valid Instagram profile URL</div>
                 </div>
                 
                 <button type="submit" class="btn">
@@ -985,7 +985,7 @@
           email: document.getElementById('email').value,
           contact: document.getElementById('contact').value,
           semester: document.getElementById('semester').value,
-          reelLink: document.getElementById('reelLink').value
+          profileLink: document.getElementById('profileLink').value
         };
         
         // Show loading overlay
@@ -1080,13 +1080,13 @@
           }
         }
         
-        // Special validation for reel link
-        if (input.id === 'reelLink' && input.value.trim()) {
-          const instaRegex = /https?:\/\/(www\.)?instagram\.com\/reel\/.+/i;
+        // Special validation for profile link
+        if (input.id === 'profileLink' && input.value.trim()) {
+          const instaRegex = /https?:\/\/(www\.)?instagram\.com\/[A-Za-z0-9._]+\/?/i;
           if (!instaRegex.test(input.value)) {
             isValid = false;
             input.classList.add('error');
-            document.getElementById('reelLinkError').style.display = 'block';
+            document.getElementById('profileLinkError').style.display = 'block';
           }
         }
       });
