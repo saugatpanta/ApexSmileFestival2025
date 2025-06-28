@@ -1,4 +1,4 @@
-const connectDB = require('../utils/db');
+const { connectDB } = require('../utils/db');
 const mongoose = require('mongoose');
 
 module.exports = async (req, res) => {
