@@ -44,12 +44,13 @@ const registrationSchema = new mongoose.Schema({
     required: [true, 'Semester is required'],
     trim: true
   },
-  profileLink: {
+  profileLink: {  // Fixed field name consistency
     type: String,
-    required: [true, 'Reel link is required'],
+    required: [true, 'Instagram profile link is required'],
     validate: {
-      validator: (v) => /https?:\/\/(www\.)?instagram\.com\/[A-Za-z0-9._]+\/?/i;.test(v),
-      message: props => 'Invalid Instagram profile URL! Must start with https://www.instagram.com/username/'
+      // Fixed regex pattern
+      validator: (v) => /https?:\/\/(?:www\.)?instagram\.com\/([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|(?:\.(?!\.))){0,28}(?:[A-Za-z0-9_]))?\/?/i.test(v),
+      message: props => 'Invalid Instagram profile URL! Must be in format: https://www.instagram.com/username/'
     }
   },
   status: {
@@ -61,10 +62,10 @@ const registrationSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Pre-save hook
+// Pre-save hook (fixed field names)
 registrationSchema.pre('save', function(next) {
   // Trim string fields
-  ['name', 'program', 'semester', 'reelLink'].forEach(field => {
+  ['name', 'program', 'semester', 'profileLink'].forEach(field => {
     if (this[field]) this[field] = this[field].trim();
   });
   
