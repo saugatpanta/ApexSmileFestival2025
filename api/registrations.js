@@ -1,4 +1,4 @@
-const connectDB = require('../utils/db');
+const { connectDB } = require('../utils/db');
 const Registration = require('../models/Registration');
 
 module.exports = async (req, res) => {
@@ -22,12 +22,12 @@ module.exports = async (req, res) => {
         reelLink
       });
 
-      await newRegistration.save();
+      const savedRegistration = await newRegistration.save();
       
       res.status(201).json({
         success: true,
         message: 'Registration submitted successfully',
-        registrationId: newRegistration.registrationId
+        registrationId: savedRegistration.registrationId
       });
       
     } catch (error) {
