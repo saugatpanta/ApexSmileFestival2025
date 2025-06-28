@@ -48,8 +48,8 @@ const registrationSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Reel link is required'],
     validate: {
-      validator: (v) => /https?:\/\/(www\.)?instagram\.com\/reel\/.+/i.test(v),
-      message: props => 'Invalid Instagram reel URL! Must start with https://www.instagram.com/reel/'
+      validator: (v) => /https?:\/\/(www\.)?instagram\.com\/[A-Za-z0-9._]+\/?/i;.test(v),
+      message: props => 'Invalid Instagram profile URL! Must start with https://www.instagram.com/username/'
     }
   },
   status: {
