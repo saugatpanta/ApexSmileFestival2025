@@ -1,45 +1,34 @@
-// utils/db.js
-const mongoose = require('mongoose');
 const { MongoClient } = require('mongodb');
 
-let client = null;
+let cachedClient = null;
+let cachedDb = null;
 
-// Mongoose connection for ODM
-const connectDB = async () => {
-  if (mongoose.connection.readyState === 1) return;
-  
-  try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      dbName: process.env.MONGODB_DB
-    });
-    console.log('Mongoose connected successfully');
-  } catch (error) {
-    console.error('Mongoose connection error:', error);
-    throw error;
-  }
-};
-
-// MongoDB native client for change streams
 const getMongoClient = async () => {
-  if (client && client.isConnected()) {
-    return client;
+  if (cachedClient && cachedClient.isConnected()) {
+    return { client: cachedClient, db: cachedDb };
   }
   
-  client = new MongoClient(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  });
-  
   try {
+    const client = new MongoClient(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    
     await client.connect();
-    console.log('MongoDB native client connected');
-    return client;
+    const db = client.db(process.env.MONGODB_DB);
+    
+    // Test connection
+    await db.command({ ping: 1 });
+    console.log("✅ MongoDB connected successfully");
+    
+    cachedClient = client;
+    cachedDb = db;
+    
+    return { client, db };
   } catch (error) {
-    console.error('MongoDB native connection error:', error);
-    throw error;
+    console.error('❌ MongoDB connection failed:', error);
+    throw new Error('Database connection failed');
   }
 };
 
-module.exports = { connectDB, getMongoClient };
+module.exports = { getMongoClient };
