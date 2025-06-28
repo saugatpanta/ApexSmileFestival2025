@@ -44,7 +44,7 @@ const registrationSchema = new mongoose.Schema({
     required: [true, 'Semester is required'],
     trim: true
   },
-  reelLink: {
+  profileLink: {
     type: String,
     required: [true, 'Reel link is required'],
     validate: {
