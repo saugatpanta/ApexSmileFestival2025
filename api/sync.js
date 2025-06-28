@@ -7,7 +7,6 @@ module.exports = async (req, res) => {
   
   if (!apiKey || apiKey !== validKey) {
     return res.status(401).json({
-      success: false,
       error: 'Unauthorized',
       message: 'Invalid or missing API key',
       expectedLength: validKey?.length || 0,
@@ -16,7 +15,8 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { db } = await getMongoClient();
+    const client = await getMongoClient();
+    const db = client.db(process.env.MONGODB_DB);
     const collection = db.collection('registrations');
     
     // Get all registrations
@@ -35,17 +35,10 @@ module.exports = async (req, res) => {
       }
     }).sort({ createdAt: -1 }).toArray();
 
-    // Format dates and ensure consistent structure
+    // Format dates
     const formattedData = data.map(item => ({
-      registrationId: item.registrationId || 'N/A',
-      name: item.name || 'Unknown',
-      email: item.email || '',
-      contact: item.contact || '',
-      program: item.program || '',
-      semester: item.semester || '',
-      reelLink: item.reelLink || '',
-      status: item.status || 'Submitted',
-      createdAt: item.createdAt?.toISOString() || new Date().toISOString()
+      ...item,
+      createdAt: item.createdAt.toISOString()
     }));
 
     res.status(200).json({
@@ -55,12 +48,11 @@ module.exports = async (req, res) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('SYNC ERROR:', error);
+    console.error('MongoDB error:', error);
     res.status(500).json({
       success: false,
       error: 'Database operation failed',
-      details: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      details: error.message
     });
   }
 };
