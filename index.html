@@ -1041,59 +1041,60 @@
     }
     
     function validateForm() {
-      let isValid = true;
-      const inputs = form.querySelectorAll('input, select');
+    let isValid = true;
+    const inputs = form.querySelectorAll('input, select');
+    
+    // Reset errors
+    document.querySelectorAll('.error-message').forEach(el => {
+      el.style.display = 'none';
+    });
+    inputs.forEach(input => input.classList.remove('error'));
+    
+    // Check each input
+    inputs.forEach(input => {
+      if (input.hasAttribute('required') && !input.value.trim()) {
+        isValid = false;
+        input.classList.add('error');
+        const errorId = input.id + 'Error';
+        const errorEl = document.getElementById(errorId);
+        if (errorEl) errorEl.style.display = 'block';
+      }
       
-      // Reset errors
-      document.querySelectorAll('.error-message').forEach(el => {
-        el.style.display = 'none';
-      });
-      inputs.forEach(input => input.classList.remove('error'));
-      
-      // Check each input
-      inputs.forEach(input => {
-        if (input.hasAttribute('required') && !input.value.trim()) {
+      // Special validation for email
+      if (input.type === 'email' && input.value.trim()) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(input.value)) {
           isValid = false;
           input.classList.add('error');
-          const errorId = input.id + 'Error';
-          const errorEl = document.getElementById(errorId);
-          if (errorEl) errorEl.style.display = 'block';
+          document.getElementById('emailError').style.display = 'block';
         }
-        
-        // Special validation for email
-        if (input.type === 'email' && input.value.trim()) {
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(input.value)) {
-            isValid = false;
-            input.classList.add('error');
-            document.getElementById('emailError').style.display = 'block';
-          }
-        }
-        
-        // Special validation for contact number
-        if (input.id === 'contact' && input.value.trim()) {
-          const phoneRegex = /^[0-9]{10}$/;
-          if (!phoneRegex.test(input.value)) {
-            isValid = false;
-            input.classList.add('error');
-            document.getElementById('contactError').style.display = 'block';
-          }
-        }
-        
-        // Special validation for profile link
-        if (input.id === 'profileLink' && input.value.trim()) {
-          const instaRegex = /https?:\/\/(www\.)?instagram\.com\/[A-Za-z0-9._]+\/?/i;
-          if (!instaRegex.test(input.value)) {
-            isValid = false;
-            input.classList.add('error');
-            document.getElementById('profileLinkError').style.display = 'block';
-          }
-        }
-      });
+      }
       
-      return isValid;
-    }
+      // Special validation for contact number
+      if (input.id === 'contact' && input.value.trim()) {
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(input.value)) {
+          isValid = false;
+          input.classList.add('error');
+          document.getElementById('contactError').style.display = 'block';
+        }
+      }
+      
+      // Fixed Instagram profile link validation
+      if (input.id === 'profileLink' && input.value.trim()) {
+        // Updated regex pattern
+        const instaRegex = /https?:\/\/(?:www\.)?instagram\.com\/([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|(?:\.(?!\.))){0,28}(?:[A-Za-z0-9_]))?\/?/i;
+        if (!instaRegex.test(input.value)) {
+          isValid = false;
+          input.classList.add('error');
+          document.getElementById('profileLinkError').innerText = 'Invalid format. Must be: https://www.instagram.com/username/';
+          document.getElementById('profileLinkError').style.display = 'block';
+        }
+      }
+    });
     
+    return isValid;
+  }
     function showToast(message, type) {
       const toast = document.createElement('div');
       toast.className = `cyber-toast ${type}`;
