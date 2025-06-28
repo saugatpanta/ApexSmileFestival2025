@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
   if (req.method === 'POST') {
     try {
       await connectDB();
-      const { name, program, email, contact, semester, reelLink } = req.body;
+      const { name, program, email, contact, semester, profileLink } = req.body;
       
       // Create registration
       const newRegistration = new Registration({
