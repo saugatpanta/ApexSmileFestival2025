@@ -14,6 +14,10 @@
       "use": "@vercel/node"
     },
     {
+      "src": "api/changeStream.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "index.html",
       "use": "@vercel/static"
     }
@@ -21,8 +25,7 @@
   "routes": [
     {
       "src": "/api/health",
-      "dest": "/api/health.js",
-      "methods": ["GET"]
+      "dest": "/api/health.js"
     },
     {
       "src": "/api/registrations",
@@ -33,6 +36,11 @@
       "src": "/api/sync",
       "dest": "/api/sync.js",
       "methods": ["GET"]
+    },
+    {
+      "src": "/api/start-change-stream",
+      "dest": "/api/changeStream.js",
+      "methods": ["POST"]
     },
     {
       "src": "/(.*)",
