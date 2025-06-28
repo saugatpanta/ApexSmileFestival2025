@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
         email,
         contact,
         semester,
-        reelLink
+        profileLink
       });
 
       const savedRegistration = await newRegistration.save();
