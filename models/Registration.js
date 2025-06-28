@@ -76,9 +76,4 @@ registrationSchema.pre('save', function(next) {
   next();
 });
 
-// Indexes
-registrationSchema.index({ email: 1 });
-registrationSchema.index({ status: 1 });
-registrationSchema.index({ createdAt: -1 });
-
 module.exports = mongoose.model('Registration', registrationSchema);
